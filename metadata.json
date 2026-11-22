@@ -1,0 +1,6 @@
+{
+  "name": "Diploma de Estudios Africanos · Módulo I",
+  "description": "Recurso didáctico interactivo de la ULPGC: De la Cuna de la Humanidad a los Grandes Reinos Precoloniales. Integra los 10 temas de Antropología y Evolución Humana con visor biomecánico 3D, Atlas de Paleoantropología y Paleobotánica, Paleoproteómica y Paleogenómica, Etología comparada (2026) con escena 3D lítica y Árbol de Parentesco, reinos precoloniales, simulador comercial, ficha crítica, glosario y autoevaluación.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
