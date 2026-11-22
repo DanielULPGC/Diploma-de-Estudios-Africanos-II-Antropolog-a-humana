@@ -1,3 +1,5 @@
+import { resolveAssetUrl } from '../utils/assetUrl';
+
 export type GalleryCategoryId =
   | 'todas'
   | 'ciencia-botica'
@@ -156,7 +158,7 @@ export const GALLERY_CATEGORIES: Array<{ id: GalleryCategoryId; label: string }>
   { id: 'mirada-critica', label: 'Mirada crítica' },
 ];
 
-export const HISTORICAL_PLATES: HistoricalPlate[] = [
+const RAW_HISTORICAL_PLATES: HistoricalPlate[] = [
   {
     id: 'lamina-06',
     src: '/assets/cannibalism-gallery/lamina-06.jpg',
@@ -486,6 +488,11 @@ export const HISTORICAL_PLATES: HistoricalPlate[] = [
       'Apropiación crítica y pedagógica de la viñeta para cuestionar el etnocentrismo y la construcción de «el otro».',
   },
 ];
+
+export const HISTORICAL_PLATES: HistoricalPlate[] = RAW_HISTORICAL_PLATES.map((plate) => ({
+  ...plate,
+  src: resolveAssetUrl(plate.src),
+}));
 
 export const GENEALOGY_PHASES: GenealogyPhase[] = [
   {

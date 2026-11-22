@@ -11,6 +11,7 @@ import {
   clearPendingCourseDetail,
   consumePendingCourseDetail,
 } from '../data/courseNavigation';
+import { resolveAssetUrl } from '../utils/assetUrl';
 import { EditorialPlate } from './EditorialPlate';
 import { useLightbox } from './LightboxContext';
 
@@ -19,32 +20,32 @@ const KINGDOM_IMAGES: Record<
   { src: string; alt: string; caption: string }
 > = {
   kush: {
-    src: '/src/assets/images/ficha_reino_kush_1795186076315.jpg',
+    src: resolveAssetUrl('src/assets/images/ficha_reino_kush_1795186076315.jpg'),
     alt: 'Lámina editorial de las pirámides de arenisca de Meroe en el antiguo Reino de Kush junto al Nilo',
     caption: 'Pirámides reales de Meroe (Reino de Kush, Sudán actual) · Lámina editorial',
   },
   aksum: {
-    src: '/src/assets/images/ficha_reino_aksum_1795186075964.jpg',
+    src: resolveAssetUrl('src/assets/images/ficha_reino_aksum_1795186075964.jpg'),
     alt: 'Lámina editorial de las estelas monolíticas de granito del antiguo Reino de Aksum en el altiplano etíope',
     caption: 'Estelas monolíticas de granito de Aksum (Etiopía) · Lámina editorial',
   },
   swahili: {
-    src: '/src/assets/images/ficha_reino_swahili_1795186189712.jpg',
+    src: resolveAssetUrl('src/assets/images/ficha_reino_swahili_1795186189712.jpg'),
     alt: 'Lámina editorial de arquitectura en piedra coralina y dhows del océano Índico en Kilwa Kisiwani (Costa Suajili)',
     caption: 'Kilwa Kisiwani, arquitectura coralina y navegación monzónica (Ciudades-Estado Suajili) · Lámina editorial',
   },
   mali: {
-    src: '/src/assets/images/ficha_reino_mali_1795186075923.jpg',
+    src: resolveAssetUrl('src/assets/images/ficha_reino_mali_1795186075923.jpg'),
     alt: 'Lámina editorial de la arquitectura de adobe sudano-saheliana y eruditos de Tombuctú en el Imperio de Malí',
     caption: 'Arquitectura sudano-saheliana y centros de estudio de Tombuctú (Imperio de Malí) · Lámina editorial',
   },
   zimbabwe: {
-    src: '/src/assets/images/ficha_reino_zimbabue_1795186075308.jpg',
+    src: resolveAssetUrl('src/assets/images/ficha_reino_zimbabue_1795186075308.jpg'),
     alt: 'Lámina editorial del Gran Recinto de piedra seca y la torre cónica del Gran Zimbabue',
     caption: 'Gran Recinto y torre cónica de granito en piedra seca (Gran Zimbabue) · Lámina editorial',
   },
   benin: {
-    src: '/src/assets/images/ficha_reino_benin_1795186075727.jpg',
+    src: resolveAssetUrl('src/assets/images/ficha_reino_benin_1795186075727.jpg'),
     alt: 'Lámina editorial de cabeza real conmemorativa y placa en relieve de latón del Reino de Benín',
     caption: 'Escultura real y placas en relieve de latón a la cera perdida (Reino de Benín) · Lámina editorial',
   },

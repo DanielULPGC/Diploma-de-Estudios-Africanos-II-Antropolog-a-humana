@@ -1,3 +1,5 @@
+import { resolveAssetUrl } from '../utils/assetUrl';
+
 export type OriginId = 'irhoud' | 'florisbad' | 'omo' | 'blombos' | 'ooa';
 export type ArchSiteId = 'nok' | 'jenne' | 'igbo' | 'mapungubwe';
 export type KingdomId = 'kush' | 'aksum' | 'mali' | 'zimbabwe' | 'benin' | 'swahili';
@@ -21,7 +23,7 @@ export const EDITORIAL_PLATES: Record<
 > = {
   hero: {
     id: 'hero',
-    src: '/src/assets/images/hero_african_heritage_1795177373504.jpg',
+    src: resolveAssetUrl('src/assets/images/hero_african_heritage_1795177373504.jpg'),
     figLabel: 'Fig. 1',
     title: 'Gran Recinto y Torre Cónica · Meseta de Zimbabue',
     caption:
@@ -31,7 +33,7 @@ export const EDITORIAL_PLATES: Record<
   },
   metallurgy: {
     id: 'metallurgy',
-    src: '/src/assets/images/plate_archaeology_metallurgy_1795177375307.jpg',
+    src: resolveAssetUrl('src/assets/images/plate_archaeology_metallurgy_1795177375307.jpg'),
     figLabel: 'Fig. 2',
     title: 'Tradición escultórica en terracota y bronce a la cera perdida',
     caption:
@@ -41,7 +43,7 @@ export const EDITORIAL_PLATES: Record<
   },
   kingdoms: {
     id: 'kingdoms',
-    src: '/src/assets/images/plate_precolonial_kingdoms_1795177373316.jpg',
+    src: resolveAssetUrl('src/assets/images/plate_precolonial_kingdoms_1795177373316.jpg'),
     figLabel: 'Fig. 3',
     title: 'Pirámides reales de Meroe · Reino de Kush (Nubia / Sudán)',
     caption:
@@ -51,7 +53,7 @@ export const EDITORIAL_PLATES: Record<
   },
   trade: {
     id: 'trade',
-    src: '/src/assets/images/plate_sahara_indian_ocean_1795177376335.jpg',
+    src: resolveAssetUrl('src/assets/images/plate_sahara_indian_ocean_1795177376335.jpg'),
     figLabel: 'Fig. 4',
     title: 'Navegación en dhow y arquitectura coralina · Costa Swahili',
     caption:
