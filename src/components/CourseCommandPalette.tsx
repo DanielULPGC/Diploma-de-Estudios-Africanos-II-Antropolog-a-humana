@@ -312,6 +312,68 @@ export function CourseCommandPalette({
           'ciencia mito atapuerca gran dolina el sidron moula guercy krapina el mirador botica europea mumia axungia hominis mahale kibale ngogo norikoshi sherrow lituania 1571 mateo de paris'
         ),
         action: { sectionId: 'sec-estereotipos-canibalismo', cannibalism: { tab: 'ciencia-mito' } },
+      },
+      {
+        id: 'ref-antropologia-visual-filmografia',
+        category: 'laboratorios',
+        categoryLabel: 'Bloque III · Antropología Visual',
+        title: 'Filmografía etnográfica de África (AntropologiaVisual.net · 13 obras)',
+        subtitle:
+          'Wodaabe, Shooting Freetown, Azande, Akan, Aoujgal, Sidi Ifni, Bwiti, Djema el Fna, Dakar, Tabanca, La forêt y Gurumbé',
+        meta: '05c · Cine etnográfico',
+        searchBlob: normalizeSearchText(
+          'antropologia visual antropologiavisual net cine etnografico documental africa wodaabe herzog gerewol shooting freetown sierra leona jean rouch etnoficcion azande evans pritchard sudan akan costa de marfil jordi esteva retorno al pais de las almas aoujgal marruecos magreb bereber atlas sidi ifni romain simenel ibogaina bwiti gabon camerun djema el fna marrakech dos cuadernos dakar senegal tabanca guinea bissau la foret ceuta frontera gurumbe miguel angel rosales ruanda genocidio'
+        ),
+        action: {
+          sectionId: 'sec-antropologia-visual',
+          visualAnthropology: { tab: 'filmografia' },
+        },
+      },
+      {
+        id: 'ref-antropologia-visual-vivo',
+        category: 'laboratorios',
+        categoryLabel: 'Bloque III · Archivo en directo',
+        title: 'Conexión directa con el archivo abierto AntropologiaVisual.net',
+        subtitle: 'Búsqueda en tiempo real en antropologiavisual.net sobre África, muestras y festivales',
+        meta: '05c · Archivo vivo',
+        searchBlob: normalizeSearchText(
+          'antropologiavisual net archivo vivo api busqueda directo festival jean rouch maam madrid lleida jordi esteva miguel angel rosales jorgelina barrera ficaa'
+        ),
+        action: {
+          sectionId: 'sec-antropologia-visual',
+          visualAnthropology: { tab: 'archivo-vivo' },
+        },
+      },
+      {
+        id: 'ref-cultural-studies-tropos',
+        category: 'laboratorios',
+        categoryLabel: 'Bloque III · Cultural Studies',
+        title: 'El «África misteriosa»: 8 tropos, imaginarios y estereotipos',
+        subtitle:
+          'Continente oscuro, ciudades perdidas, safari sin ciudadanos, white savior, tribalismo y exposiciones coloniales',
+        meta: '05d · Cultural Studies',
+        searchBlob: normalizeSearchText(
+          'cultural studies africa misteriosa imaginarios estereotipos continente oscuro corazon de las tinieblas stanley conrad achebe mudimbe biblioteca colonial edward said chimamanda adichie historia unica binyavanga wainaina mbembe ngugi white savior salvador blanco afropesimismo safari tribu saartjie baartman zoos humanos fanon'
+        ),
+        action: {
+          sectionId: 'sec-cultural-studies',
+          culturalStudies: { tab: 'tropos' },
+        },
+      },
+      {
+        id: 'ref-cultural-studies-hall-lab',
+        category: 'laboratorios',
+        categoryLabel: 'Bloque III · Laboratorio',
+        title: 'Laboratorio de decodificación de Stuart Hall (lectura dominante, negociada y oposicional)',
+        subtitle: 'Análisis de sinopsis, titulares de prensa, safaris, campañas ONG y cine comercial sobre África',
+        meta: '05d · Stuart Hall',
+        searchBlob: normalizeSearchText(
+          'laboratorio decodificacion codificacion stuart hall lectura dominante negociada oposicional contra narrativas literatura africana ousmane sembene fespaco seydou keita malick sidibe afrofuturismo africanfuturism nnedi okorafor'
+        ),
+        action: {
+          sectionId: 'sec-cultural-studies',
+          culturalStudies: { tab: 'decodificador' },
+        },
       }
     );
 

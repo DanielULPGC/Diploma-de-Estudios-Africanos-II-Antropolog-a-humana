@@ -625,7 +625,7 @@ export const PROPUESTA_DIDACTICA_PERFILES: PropuestaDidacticaPerfil[] = [
       'Abrir fichas de táxones destacados y revisar su modelo 3D o ubicación.',
       'Explorar Territorio y Parentesco para relacionar tiempo, espacio y linajes.',
       'Consultar el Glosario alfabético completo cuando aparezcan conceptos técnicos.',
-      'Finalizar con el Repaso dinámico de preguntas o una ruta personal de exploración.',
+      'Finalizar con una ruta personal de exploración y revisión bibliográfica.',
     ],
     objetivos: [
       'Comprender que la evolución humana no es una escalera lineal sino un árbol ramificado.',

@@ -2,7 +2,6 @@ import { Suspense, lazy, useEffect, useMemo, useRef, useState, type KeyboardEven
 import {
   ArrowUpRight,
   Box,
-  Download,
   FileText,
   FlaskConical,
   Compass,
@@ -11,7 +10,6 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import {
-  ETHOLOGY_PDF_PATH,
   ETHOLOGY_STATS,
   HENKE_2026_META,
   HENKE_2026_TASKS,
@@ -421,22 +419,14 @@ export function EthologyModule() {
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <a
-              href={ETHOLOGY_PDF_PATH}
+              href={HENKE_2026_META.doi}
               target="_blank"
               rel="noopener noreferrer"
               className="min-h-[36px] px-3 py-1.5 font-mono text-xs text-ink bg-paper border border-hairline rounded hover:border-ink inline-flex items-center gap-1.5 transition-colors whitespace-nowrap"
             >
               <FileText className="w-3.5 h-3.5 text-ochre" aria-hidden="true" />
-              <span>Leer artículo PDF (2026)</span>
+              <span>Artículo original · DOI (2026)</span>
               <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
-            </a>
-            <a
-              href={ETHOLOGY_PDF_PATH}
-              download="Henke-von_der_Malsburg_et_al_2026_Proc_R_Soc_B.pdf"
-              className="min-h-[36px] px-3 py-1.5 font-mono text-xs text-ink-muted bg-canvas border border-hairline rounded hover:border-ink hover:text-ink inline-flex items-center gap-1.5 transition-colors whitespace-nowrap"
-            >
-              <Download className="w-3.5 h-3.5" aria-hidden="true" />
-              <span>Descargar PDF</span>
             </a>
           </div>
         </div>

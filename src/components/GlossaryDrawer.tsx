@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BookOpen, ChevronDown, Search } from 'lucide-react';
+import { BookOpen, ChevronDown, PanelRightOpen, Search } from 'lucide-react';
 import {
   GLOSSARY_CATEGORIES,
   GLOSSARY_TERMS,
@@ -22,7 +22,7 @@ function firstLetter(term: string): string {
 }
 
 export function GlossaryDrawer() {
-  const { jumpRequest } = useGlossary();
+  const { jumpRequest, openTerm } = useGlossary();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [category, setCategory] = useState<GlossaryCategory | 'todos'>('todos');
   const [activeLetter, setActiveLetter] = useState<string>('TODAS');
@@ -134,6 +134,10 @@ export function GlossaryDrawer() {
               <h2 className="font-display text-xl sm:text-2xl font-semibold text-ink leading-snug">
                 Glosario técnico de paleoantropología, paleobotánica y etología
               </h2>
+              <p className="text-xs text-ink-muted m-0">
+                Haga clic en cualquier término para abrir la vista lateral de búsqueda contextual
+                con definición extendida y enlaces directos a las secciones del curso.
+              </p>
             </div>
           </div>
 
@@ -304,40 +308,69 @@ export function GlossaryDrawer() {
                     const isOpen = expandedIds.has(item.id);
                     return (
                       <div key={item.id} className="px-4 sm:px-5 py-2.5">
-                        <dt>
+                        <dt className="flex items-center justify-between gap-3">
                           <button
                             type="button"
-                            onClick={() => toggleTerm(item.id)}
-                            aria-expanded={isOpen}
-                            className="w-full flex items-center justify-between gap-4 py-1 text-left cursor-pointer group"
+                            onClick={(e) => openTerm(item.id, e.currentTarget)}
+                            className="flex-1 min-w-0 py-1 text-left cursor-pointer group flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5"
+                            title="Abrir búsqueda contextual, definición extendida y enlaces al temario"
                           >
-                            <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
-                              <span className="font-display text-base font-semibold text-ink group-hover:text-ochre transition-colors">
-                                {item.term}
-                              </span>
-                              <span
-                                className={`font-mono text-[11px] font-medium ${categoryColor(
-                                  item.category
-                                )}`}
-                              >
-                                {item.categoryLabel}
-                              </span>
-                            </div>
-                            <ChevronDown
-                              className={`w-4 h-4 text-ink-muted shrink-0 transition-transform duration-150 ${
-                                isOpen ? 'rotate-180' : ''
-                              }`}
-                              aria-hidden="true"
-                            />
+                            <span className="font-display text-base font-semibold text-ink group-hover:text-ochre underline decoration-dotted decoration-hairline group-hover:decoration-ochre underline-offset-4 transition-colors">
+                              {item.term}
+                            </span>
+                            <span
+                              className={`font-mono text-[11px] font-medium ${categoryColor(
+                                item.category
+                              )}`}
+                            >
+                              {item.categoryLabel}
+                            </span>
                           </button>
+
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              type="button"
+                              onClick={(e) => openTerm(item.id, e.currentTarget)}
+                              className="min-h-[34px] px-2.5 py-1 font-mono text-[11px] text-lapis hover:text-ink bg-paper border border-hairline hover:border-ink rounded inline-flex items-center gap-1.5 transition-colors whitespace-nowrap cursor-pointer"
+                              aria-label={`Abrir búsqueda contextual de ${item.term}`}
+                            >
+                              <PanelRightOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                              <span className="hidden sm:inline">Búsqueda contextual</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => toggleTerm(item.id)}
+                              aria-expanded={isOpen}
+                              aria-label={`${isOpen ? 'Contraer' : 'Ver'} resumen rápido de ${item.term}`}
+                              className="min-h-[34px] min-w-[34px] inline-flex items-center justify-center rounded border border-hairline bg-paper text-ink-muted hover:text-ink hover:border-ink transition-colors cursor-pointer"
+                            >
+                              <ChevronDown
+                                className={`w-4 h-4 transition-transform duration-150 ${
+                                  isOpen ? 'rotate-180' : ''
+                                }`}
+                                aria-hidden="true"
+                              />
+                            </button>
+                          </div>
                         </dt>
 
                         {isOpen && (
                           <dd className="m-0 pt-2 pb-1.5 flex flex-col gap-2 text-[15px] leading-relaxed text-ink max-w-[68ch]">
                             <p className="m-0">{item.definition}</p>
-                            <span className="font-mono text-xs text-ink-muted">
-                              Fuente · {item.moduleContext}
-                            </span>
+                            <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                              <span className="font-mono text-xs text-ink-muted">
+                                Fuente · {item.moduleContext}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={(e) => openTerm(item.id, e.currentTarget)}
+                                className="font-mono text-xs text-ochre hover:text-ink underline underline-offset-4 inline-flex items-center gap-1 cursor-pointer"
+                              >
+                                <PanelRightOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                                <span>Ver definición extendida y menciones en el curso</span>
+                              </button>
+                            </div>
                           </dd>
                         )}
                       </div>

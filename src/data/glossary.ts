@@ -434,6 +434,42 @@ const CURATED_MODULE_TERMS: GlossaryTerm[] = [
       'Construcción cultural europea estudiada por Roger Bartra (2011) que proyecta sobre pueblos colonizados la figura del «homo sylvestris» desprovisto de ley, ciudad o cultura (acepción vigente en la RAE hasta 1970) para definir por contraste la supuesta superioridad de la «civilización» occidental.',
     moduleContext: 'Bloque III · 05b. Estereotipos sobre canibalismo',
   },
+  {
+    id: 'biblioteca-colonial',
+    term: 'Biblioteca colonial (V.-Y. Mudimbe)',
+    category: 'metodos',
+    categoryLabel: 'Métodos y Datación',
+    definition:
+      'Concepto acuñado por el filósofo congoleño Valentin-Yves Mudimbe (The Invention of Africa, 1988) para designar el corpus occidental de relatos de viajeros, misioneros, mapas, tratados etnográficos y archivos administrativos que definió durante siglos cómo podía pensarse y narrarse África.',
+    moduleContext: 'Bloque III · 05d. Cultural Studies',
+  },
+  {
+    id: 'regimen-representacion',
+    term: 'Régimen de representación y estereotipación (Stuart Hall)',
+    category: 'metodos',
+    categoryLabel: 'Métodos y Datación',
+    definition:
+      'Repertorio interconectado de imágenes, códigos visuales y discursos con los que una cultura produce significado sobre la diferencia. Según Stuart Hall (1997), la estereotipación reduce a un grupo humano a pocos rasgos esenciales, fija esa imagen como «natural» y traza una frontera simbólica ligada al poder.',
+    moduleContext: 'Bloque III · 05d. Cultural Studies',
+  },
+  {
+    id: 'codificacion-decodificacion',
+    term: 'Codificación / decodificación (modelo de Stuart Hall)',
+    category: 'metodos',
+    categoryLabel: 'Métodos y Datación',
+    definition:
+      'Modelo de análisis cultural formulado por Stuart Hall (1973) según el cual los mensajes mediáticos se producen («codifican») dentro de códigos ideológicos dominantes, pero la audiencia puede interpretarlos («decodificarlos») desde tres posiciones: dominante, negociada u oposicional.',
+    moduleContext: 'Bloque III · 05d. Cultural Studies',
+  },
+  {
+    id: 'etnoficcion',
+    term: 'Etnoficción y antropología compartida (Jean Rouch)',
+    category: 'metodos',
+    categoryLabel: 'Métodos y Datación',
+    definition:
+      'Práctica cinematográfica impulsada en África Occidental por Jean Rouch desde los años cincuenta en la que los propios protagonistas africanos improvisan y coescriben relatos sobre su realidad social, rompiendo la distancia vertical entre cámara etnográfica y sujetos filmados.',
+    moduleContext: 'Bloque III · 05c. Antropología visual',
+  },
 ];
 
 function normalizeKey(value: string): string {

@@ -1,11 +1,15 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, Layers, RotateCcw, Search, X } from 'lucide-react';
 import {
-  EDITORIAL_PLATES,
-  KEY_STATS,
-  type KingdomId,
-  type SourceId,
-} from './data/curriculum';
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  Download,
+  Layers,
+  RotateCcw,
+  Search,
+  X,
+} from 'lucide-react';
+import { EDITORIAL_PLATES, KEY_STATS } from './data/curriculum';
 import { findGlossaryTerm } from './data/glossary';
 import {
   COURSE_BLOCKS,
@@ -61,8 +65,11 @@ const LazyEthologyModule = lazy(() =>
 const LazyCannibalismStereotypesModule = lazy(
   () => import('./components/CannibalismStereotypesModule')
 );
-const LazySeminarCardBuilder = lazy(() =>
-  import('./components/SeminarCardBuilder').then((m) => ({ default: m.SeminarCardBuilder }))
+const LazyVisualAnthropologyAfricaModule = lazy(
+  () => import('./components/VisualAnthropologyAfricaModule')
+);
+const LazyCulturalStudiesAfricaModule = lazy(
+  () => import('./components/CulturalStudiesAfricaModule')
 );
 
 function LazySectionFallback({
@@ -96,7 +103,7 @@ const TOP_NAV_LINKS: Array<{ id: string; blockId?: CourseBlockId; label: string 
   { id: 'sec-origenes', blockId: 'bloque-1', label: 'Evolución' },
   { id: 'sec-atlas-paleobotanica', blockId: 'bloque-2', label: 'Ciencias' },
   { id: 'sec-tecnologia', blockId: 'bloque-3', label: 'Sociedades' },
-  { id: 'sec-seminario', blockId: 'bloque-4', label: 'Taller' },
+  { id: 'sec-bibliografia', blockId: 'bloque-4', label: 'Bibliografía' },
   { id: 'sec-glosario', label: 'Glosario' },
 ];
 
@@ -179,7 +186,7 @@ function BlockHeaderBand({
 }
 
 function AppShell() {
-  const { jumpToGlossary } = useGlossary();
+  const { jumpToGlossary, openTerm } = useGlossary();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSectionId, setActiveSectionId] = useState<string>('sec-origenes');
   const [studyViewMode, setStudyViewMode] = useState<StudyViewMode>('completo');
@@ -219,12 +226,6 @@ function AppShell() {
     }
     return ['sec-origenes'];
   });
-  const [seminarPreset, setSeminarPreset] = useState<{
-    kingdomId?: KingdomId;
-    sourceA?: SourceId;
-    sourceB?: SourceId;
-    nonce: number;
-  } | null>(null);
 
   const studyViewModeRef = useRef(studyViewMode);
   studyViewModeRef.current = studyViewMode;
@@ -267,7 +268,7 @@ function AppShell() {
       if (action.glossaryTermId) {
         const term = findGlossaryTerm(action.glossaryTermId);
         if (term) {
-          jumpToGlossary(term);
+          openTerm(term.id);
           return;
         }
       }
@@ -302,7 +303,7 @@ function AppShell() {
         onBeforeScroll: () => dispatchCourseDetailEvent(action),
       });
     },
-    [jumpToGlossary, lockScrollSpy, markSectionVisited]
+    [lockScrollSpy, markSectionVisited, openTerm]
   );
 
   const handleReturnToOrigin = useCallback(() => {
@@ -458,20 +459,6 @@ function AppShell() {
     );
   };
 
-  const handleSendKingdomToSeminar = (kingdomId: KingdomId) => {
-    setSeminarPreset({ kingdomId, nonce: Date.now() });
-    navigateToCourseTarget({ sectionId: 'sec-seminario' });
-  };
-
-  const handleSendSourcesToSeminar = (primary: SourceId, compare: SourceId | null) => {
-    setSeminarPreset({
-      sourceA: primary,
-      sourceB: compare ?? undefined,
-      nonce: Date.now(),
-    });
-    navigateToCourseTarget({ sectionId: 'sec-seminario' });
-  };
-
   const showBlock = (blockId: CourseBlockId) =>
     studyViewMode === 'completo' || activeBlockId === blockId;
 
@@ -551,13 +538,44 @@ function AppShell() {
               })}
             </nav>
 
-            <div className="shrink-0">
+            <div className="shrink-0 flex items-center gap-2">
+              {import.meta.env.DEV && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      const res = await fetch('/diploma-estudios-africanos-moodle.zip');
+                      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                      const blob = await res.blob();
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'diploma-estudios-africanos-moodle.zip';
+                      document.body.appendChild(a);
+                      a.click();
+                      a.remove();
+                      window.setTimeout(() => URL.revokeObjectURL(url), 4000);
+                    } catch {
+                      const fallback = document.createElement('a');
+                      fallback.href = '/diploma-estudios-africanos-moodle.zip';
+                      fallback.download = 'diploma-estudios-africanos-moodle.zip';
+                      document.body.appendChild(fallback);
+                      fallback.click();
+                      fallback.remove();
+                    }
+                  }}
+                  className="min-h-[40px] px-3 py-1.5 text-xs font-semibold text-ochre bg-paper border border-ochre rounded hover:bg-ochre hover:text-white transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" aria-hidden="true" />
+                  <span>ZIP Moodle</span>
+                </button>
+              )}
               <button
                 type="button"
-                onClick={() => navigateToCourseTarget({ sectionId: 'sec-quiz' })}
+                onClick={() => navigateToCourseTarget({ sectionId: 'sec-bibliografia' })}
                 className="min-h-[40px] px-4 py-1.5 text-xs font-semibold text-white bg-ink rounded hover:bg-ochre transition-colors duration-150 whitespace-nowrap shrink-0 cursor-pointer"
               >
-                Autoevaluación
+                Bibliografía
               </button>
             </div>
           </div>
@@ -869,9 +887,9 @@ function AppShell() {
               onSwitchToFull={() => handleChangeViewMode('completo')}
             />
             <MetallurgyModule />
-            <KingdomsModule onSendToSeminar={handleSendKingdomToSeminar} />
+            <KingdomsModule />
             <TradeSimulatorModule />
-            <HistoriographyModule onSendSourcesToSeminar={handleSendSourcesToSeminar} />
+            <HistoriographyModule />
             <div
               id="sec-estereotipos-canibalismo"
               tabIndex={-1}
@@ -889,10 +907,44 @@ function AppShell() {
                 <LazyCannibalismStereotypesModule />
               </Suspense>
             </div>
+            <div
+              id="sec-antropologia-visual"
+              tabIndex={-1}
+              className="scroll-mt-20 focus:outline-none"
+            >
+              <Suspense
+                fallback={
+                  <LazySectionFallback
+                    kicker="05c. Antropología visual y cine etnográfico · AntropologiaVisual.net"
+                    title="Cargando filmografía africana, conexión directa con antropologiavisual.net y guía visual…"
+                    accentClass="text-lapis"
+                  />
+                }
+              >
+                <LazyVisualAnthropologyAfricaModule />
+              </Suspense>
+            </div>
+            <div
+              id="sec-cultural-studies"
+              tabIndex={-1}
+              className="scroll-mt-20 focus:outline-none"
+            >
+              <Suspense
+                fallback={
+                  <LazySectionFallback
+                    kicker="05d. Cultural Studies y crítica poscolonial"
+                    title="Cargando análisis del «África misteriosa», tropos, decodificador de Stuart Hall y contra-narrativas…"
+                    accentClass="text-ochre"
+                  />
+                }
+              >
+                <LazyCulturalStudiesAfricaModule />
+              </Suspense>
+            </div>
           </div>
         )}
 
-        {/* BLOQUE IV: Taller práctico, autoevaluación y referencia */}
+        {/* BLOQUE IV: Bibliografía y referencia */}
         {showBlock('bloque-4') && (
           <div className="flex flex-col gap-12">
             <BlockHeaderBand
@@ -901,26 +953,8 @@ function AppShell() {
               onSelectBlock={handleSelectBlock}
               onSwitchToFull={() => handleChangeViewMode('completo')}
             />
-            {/* Taller Interactivo de Seminario (ULPGC) */}
-            <div
-              id="sec-seminario"
-              tabIndex={-1}
-              className="scroll-mt-20 focus:outline-none"
-            >
-              <Suspense
-                fallback={
-                  <LazySectionFallback
-                    kicker="Taller de seminario · Actividad práctica ULPGC"
-                    title="Cargando constructor interactivo de ficha crítica de seminario…"
-                    accentClass="text-ochre"
-                  />
-                }
-              >
-                <LazySeminarCardBuilder externalPreset={seminarPreset} />
-              </Suspense>
-            </div>
 
-            {/* Módulo 06: Autoevaluación y Bibliografía */}
+            {/* Módulo 06: Bibliografía y repositorios */}
             <div className="hide-when-printing-seminar">
               <QuizAndBibliography />
             </div>

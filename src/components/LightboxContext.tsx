@@ -26,11 +26,17 @@ export interface LightboxItem {
 interface LightboxState {
   mode: 'single' | 'compare';
   items: LightboxItem[];
+  compareLabel?: string;
 }
 
 interface LightboxContextValue {
   openSingle: (item: LightboxItem, opener?: HTMLElement | null) => void;
-  openCompare: (itemA: LightboxItem, itemB: LightboxItem, opener?: HTMLElement | null) => void;
+  openCompare: (
+    itemA: LightboxItem,
+    itemB: LightboxItem,
+    opener?: HTMLElement | null,
+    compareLabel?: string
+  ) => void;
   closeLightbox: () => void;
 }
 
@@ -72,10 +78,15 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const openCompare = useCallback(
-    (itemA: LightboxItem, itemB: LightboxItem, opener?: HTMLElement | null) => {
+    (
+      itemA: LightboxItem,
+      itemB: LightboxItem,
+      opener?: HTMLElement | null,
+      compareLabel?: string
+    ) => {
       openerRef.current = opener ?? (document.activeElement as HTMLElement | null);
       setZoomIdx(0);
-      setState({ mode: 'compare', items: [itemA, itemB] });
+      setState({ mode: 'compare', items: [itemA, itemB], compareLabel });
     },
     []
   );
@@ -155,7 +166,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
             <div className="min-w-0 flex flex-col">
               <span className="font-mono text-xs text-white/85 tracking-wide">
                 {state.mode === 'compare'
-                  ? 'Comparación osteológica ampliada · Visor museográfico'
+                  ? state.compareLabel || 'Comparación osteológica ampliada · Visor museográfico'
                   : state.items[0]?.subtitle || 'Visor museográfico ampliado'}
               </span>
               <h2 className="font-display text-base sm:text-lg font-semibold text-white truncate m-0">

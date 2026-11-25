@@ -9,11 +9,13 @@ import {
   Save,
   XCircle,
 } from 'lucide-react';
-import vernoniaImg from '../../assets/images/vernonia_amygdalina_specimen_1795350040204.jpg';
-import aspiliaImg from '../../assets/images/aspilia_mossambicensis_specimen_1795350040226.jpg';
-import balanitesImg from '../../assets/images/balanites_aegyptiaca_specimen_1795350038649.jpg';
-import ficusImg from '../../assets/images/ficus_exasperata_specimen_1795350040825.jpg';
+import { resolveAssetUrl } from '../../utils/assetUrl';
 import { GlossaryTermTrigger } from '../GlossaryContext';
+
+const vernoniaImg = resolveAssetUrl('src/assets/images/vernonia_amygdalina_specimen_1795350040204.jpg');
+const aspiliaImg = resolveAssetUrl('src/assets/images/aspilia_mossambicensis_specimen_1795350040226.jpg');
+const balanitesImg = resolveAssetUrl('src/assets/images/balanites_aegyptiaca_specimen_1795350038649.jpg');
+const ficusImg = resolveAssetUrl('src/assets/images/ficus_exasperata_specimen_1795350040825.jpg');
 
 type PlantSpecimenId = 'vernonia' | 'aspilia' | 'balanites' | 'ficus';
 type EthologicalUseId =

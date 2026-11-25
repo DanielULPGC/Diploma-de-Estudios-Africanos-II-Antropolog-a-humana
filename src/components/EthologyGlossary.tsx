@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowUpRight, ChevronDown, Compass } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, Compass, PanelRightOpen } from 'lucide-react';
 import {
   ETHOLOGY_GLOSSARY_DOMAINS,
   ETHOLOGY_GLOSSARY_TERMS,
   type EthologyGlossaryDomain,
 } from '../data/ethologyGlossary';
+import { useGlossary } from './GlossaryContext';
 
 interface EthologyGlossaryProps {
   searchQuery?: string;
@@ -29,6 +30,7 @@ export function EthologyGlossary({
   highlightedTermId = '',
   onResetFilters,
 }: EthologyGlossaryProps) {
+  const { openTerm } = useGlossary();
   const [domainFilter, setDomainFilter] = useState<EthologyGlossaryDomain | 'todos'>('todos');
   const [expandedIds, setExpandedIds] = useState<Set<string>>(
     () => new Set(['facilitacion-local', 'pistas-sociales-indirectas', 'cuarta-dimension-herramientas'])
@@ -198,33 +200,51 @@ export function EthologyGlossary({
                 key={entry.id}
                 className={`px-4 py-2.5 transition-colors ${isHighlighted ? 'bg-paper' : ''}`}
               >
-                <dt>
+                <dt className="flex items-center justify-between gap-3">
                   <button
                     type="button"
-                    onClick={() => toggleEntry(entry.id)}
-                    aria-expanded={isOpen}
-                    className="w-full flex items-center justify-between gap-4 py-1 text-left cursor-pointer group"
+                    onClick={(e) => openTerm(entry.id, e.currentTarget)}
+                    title="Abrir búsqueda contextual, definición extendida y enlaces al temario"
+                    className="flex-1 min-w-0 py-1 text-left cursor-pointer group flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5"
                   >
-                    <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
-                      <span className="font-display text-base font-semibold text-ink group-hover:text-plum transition-colors">
-                        {entry.term}
-                      </span>
-                      <span className="font-mono text-[11px] text-ink-subtle">
-                        {entry.englishTerm}
-                      </span>
-                      <span
-                        className={`font-mono text-[11px] font-medium ${domainColor(entry.domain)}`}
-                      >
-                        {entry.domainLabel}
-                      </span>
-                    </div>
-                    <ChevronDown
-                      className={`w-4 h-4 text-ink-muted shrink-0 transition-transform duration-150 ${
-                        isOpen ? 'rotate-180' : ''
-                      }`}
-                      aria-hidden="true"
-                    />
+                    <span className="font-display text-base font-semibold text-ink group-hover:text-plum underline decoration-dotted decoration-hairline group-hover:decoration-plum underline-offset-4 transition-colors">
+                      {entry.term}
+                    </span>
+                    <span className="font-mono text-[11px] text-ink-subtle">
+                      {entry.englishTerm}
+                    </span>
+                    <span
+                      className={`font-mono text-[11px] font-medium ${domainColor(entry.domain)}`}
+                    >
+                      {entry.domainLabel}
+                    </span>
                   </button>
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={(e) => openTerm(entry.id, e.currentTarget)}
+                      aria-label={`Abrir búsqueda contextual de ${entry.term}`}
+                      className="min-h-[34px] px-2.5 py-1 font-mono text-[11px] text-plum hover:text-ink bg-paper border border-hairline hover:border-ink rounded inline-flex items-center gap-1.5 transition-colors whitespace-nowrap cursor-pointer"
+                    >
+                      <PanelRightOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                      <span className="hidden sm:inline">Contexto</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleEntry(entry.id)}
+                      aria-expanded={isOpen}
+                      aria-label={`${isOpen ? 'Contraer' : 'Ver'} resumen rápido de ${entry.term}`}
+                      className="min-h-[34px] min-w-[34px] inline-flex items-center justify-center rounded border border-hairline bg-paper text-ink-muted hover:text-ink hover:border-ink transition-colors cursor-pointer"
+                    >
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-150 ${
+                          isOpen ? 'rotate-180' : ''
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </div>
                 </dt>
 
                 {isOpen && (
@@ -236,9 +256,19 @@ export function EthologyGlossary({
                       </span>
                       {entry.ethologyContext}
                     </div>
-                    <span className="font-mono text-[11px] text-ink-muted">
-                      Contexto · {entry.moduleContext}
-                    </span>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="font-mono text-[11px] text-ink-muted">
+                        Contexto · {entry.moduleContext}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => openTerm(entry.id, e.currentTarget)}
+                        className="font-mono text-[11px] text-plum hover:text-ink underline underline-offset-4 inline-flex items-center gap-1 cursor-pointer"
+                      >
+                        <PanelRightOpen className="w-3 h-3" aria-hidden="true" />
+                        <span>Abrir vista lateral con enlaces al temario</span>
+                      </button>
+                    </div>
                   </dd>
                 )}
               </div>

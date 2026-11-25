@@ -1,5 +1,3 @@
-import { resolveAssetUrl } from '../utils/assetUrl';
-
 export interface EthologyStat {
   label: string;
   value: string;
@@ -88,10 +86,6 @@ export interface OldowanBridgeCase {
   ethologicalParallel: string;
   criticalLimit: string;
 }
-
-export const ETHOLOGY_PDF_PATH = resolveAssetUrl(
-  'assets/aistudio/Social_cues_on_stone_tools_outweigh_raw_1b718eda.pdf'
-);
 
 export const HENKE_2026_META = {
   authors:

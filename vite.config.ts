@@ -36,6 +36,31 @@ export default defineConfig(() => {
           }
         },
       },
+      {
+        name: 'serve-moodle-zip-download',
+        apply: 'serve',
+        configureServer(server) {
+          server.middlewares.use('/diploma-estudios-africanos-moodle.zip', (_req, res, next) => {
+            const zipPath = path.resolve(
+              rootDir,
+              'moodle-export/diploma-estudios-africanos-moodle.zip'
+            );
+            if (!fs.existsSync(zipPath)) {
+              next();
+              return;
+            }
+            const stat = fs.statSync(zipPath);
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/zip');
+            res.setHeader('Content-Length', String(stat.size));
+            res.setHeader(
+              'Content-Disposition',
+              'attachment; filename="diploma-estudios-africanos-moodle.zip"'
+            );
+            fs.createReadStream(zipPath).pipe(res);
+          });
+        },
+      },
     ],
     resolve: {
       alias: {

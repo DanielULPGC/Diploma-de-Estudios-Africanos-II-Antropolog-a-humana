@@ -62,6 +62,14 @@ export interface CourseDeepAction {
   cannibalism?: {
     tab: 'galeria' | 'cronologia-critica' | 'genealogia' | 'iconos' | 'lexico' | 'ciencia-mito';
   };
+  visualAnthropology?: {
+    tab?: 'filmografia' | 'archivo-vivo' | 'autores-muestras';
+    filmId?: string;
+  };
+  culturalStudies?: {
+    tab?: 'marco-teorico' | 'tropos' | 'decodificador' | 'contranarrativas';
+    tropeId?: string;
+  };
   kingdomId?: KingdomId;
   glossaryTermId?: string;
 }
@@ -182,21 +190,32 @@ export const COURSE_CHAPTERS: CourseChapterMeta[] = [
     blockId: 'bloque-3',
   },
   {
-    id: 'sec-seminario',
-    num: 'Taller',
-    label: 'Ficha crítica de seminario',
-    shortLabel: 'Taller',
-    summary: 'Constructor guiado e imprimible para redactar comentarios críticos universitarios.',
-    durationMin: 6,
-    blockId: 'bloque-4',
+    id: 'sec-antropologia-visual',
+    num: '05c',
+    label: 'Antropología visual de África',
+    shortLabel: 'Antrop. Visual',
+    summary:
+      'Archivo conectado con antropologiavisual.net: 13 documentales etnográficos de África, búsqueda en directo, Jean Rouch y método visual.',
+    durationMin: 8,
+    blockId: 'bloque-3',
   },
   {
-    id: 'sec-quiz',
+    id: 'sec-cultural-studies',
+    num: '05d',
+    label: 'Cultural Studies: el «África misteriosa»',
+    shortLabel: 'Cultural Studies',
+    summary:
+      'Stuart Hall, Mudimbe, Said, Wainaina y Adichie: 8 tropos del «África misteriosa», laboratorio de decodificación y contra-narrativas africanas.',
+    durationMin: 8,
+    blockId: 'bloque-3',
+  },
+  {
+    id: 'sec-bibliografia',
     num: '06',
-    label: 'Autoevaluación y bibliografía',
-    shortLabel: 'Autoevaluación',
-    summary: `Test de repaso DEA con corrección razonada y ${TOTAL_BIBLIOGRAPHY_COUNT} referencias verificadas APA 7.ª.`,
-    durationMin: 6,
+    label: 'Bibliografía y repositorios',
+    shortLabel: 'Bibliografía',
+    summary: `${TOTAL_BIBLIOGRAPHY_COUNT} referencias verificadas APA 7.ª y portales científicos abiertos.`,
+    durationMin: 4,
     blockId: 'bloque-4',
   },
   {
@@ -237,7 +256,7 @@ export const COURSE_BLOCKS: CourseBlockMeta[] = [
     shortTitle: 'Sociedades y Reinos',
     title: 'Tecnología, reinos y redes africanas',
     description:
-      'Siderurgia y expansión bantú, seis grandes Estados, comercio, historiografía y deconstrucción de estereotipos.',
+      'Siderurgia y expansión bantú, seis grandes Estados, comercio, historiografía, estereotipos, antropología visual y Cultural Studies.',
     accent: 'forest',
     chapterIds: [
       'sec-tecnologia',
@@ -245,17 +264,19 @@ export const COURSE_BLOCKS: CourseBlockMeta[] = [
       'sec-comercio',
       'sec-historiografia',
       'sec-estereotipos-canibalismo',
+      'sec-antropologia-visual',
+      'sec-cultural-studies',
     ],
   },
   {
     id: 'bloque-4',
     roman: 'IV',
-    shortTitle: 'Práctica y Glosario',
-    title: 'Taller, autoevaluación y referencia',
+    shortTitle: 'Referencia y Glosario',
+    title: 'Bibliografía y glosario técnico',
     description:
-      'Ficha crítica de seminario imprimible, test de repaso DEA, bibliografía APA 7.ª y glosario.',
+      'Bibliografía verificada APA 7.ª, repositorios científicos abiertos y glosario técnico A–Z.',
     accent: 'ink',
-    chapterIds: ['sec-seminario', 'sec-quiz', 'sec-glosario'],
+    chapterIds: ['sec-bibliografia', 'sec-glosario'],
   },
 ];
 
@@ -360,12 +381,23 @@ export const INTERACTIVE_LAB_SHORTCUTS: InteractiveLabShortcut[] = [
     },
   },
   {
-    id: 'lab-seminario',
-    title: 'Ficha crítica de seminario',
-    subtitle: 'Triangulación de fuentes e impresión limpia para entrega',
-    tag: 'Taller · Bloque IV',
+    id: 'lab-antropologia-visual-africa',
+    title: 'Antropología visual de África (AntropologiaVisual.net)',
+    subtitle: '13 documentales etnográficos africanos, reproducción en línea y consulta directa al archivo',
+    tag: 'Archivo · Bloque III',
     action: {
-      sectionId: 'sec-seminario',
+      sectionId: 'sec-antropologia-visual',
+      visualAnthropology: { tab: 'filmografia' },
+    },
+  },
+  {
+    id: 'lab-cultural-studies-africa',
+    title: 'Cultural Studies: el «África misteriosa»',
+    subtitle: '8 tropos coloniales, laboratorio de lectura de Stuart Hall y contra-narrativas africanas',
+    tag: 'Cultural Studies · Bloque III',
+    action: {
+      sectionId: 'sec-cultural-studies',
+      culturalStudies: { tab: 'decodificador' },
     },
   },
 ];
@@ -397,6 +429,8 @@ export interface CourseDetailChannelMap {
   atlas: NonNullable<CourseDeepAction['atlas']>;
   paleomolecular: NonNullable<CourseDeepAction['paleomolecular']>;
   cannibalism: NonNullable<CourseDeepAction['cannibalism']>;
+  visualAnthropology: NonNullable<CourseDeepAction['visualAnthropology']>;
+  culturalStudies: NonNullable<CourseDeepAction['culturalStudies']>;
   kingdomId: KingdomId;
 }
 
@@ -466,6 +500,22 @@ export function dispatchCourseDetailEvent(action: CourseDeepAction): void {
     storePendingCourseDetail('cannibalism', action.cannibalism);
     window.dispatchEvent(
       new CustomEvent('ulpgc:open-cannibalism-tab', { detail: action.cannibalism })
+    );
+  }
+  if (action.visualAnthropology) {
+    storePendingCourseDetail('visualAnthropology', action.visualAnthropology);
+    window.dispatchEvent(
+      new CustomEvent('ulpgc:open-visual-anthropology-tab', {
+        detail: action.visualAnthropology,
+      })
+    );
+  }
+  if (action.culturalStudies) {
+    storePendingCourseDetail('culturalStudies', action.culturalStudies);
+    window.dispatchEvent(
+      new CustomEvent('ulpgc:open-cultural-studies-tab', {
+        detail: action.culturalStudies,
+      })
     );
   }
   if (action.kingdomId) {
