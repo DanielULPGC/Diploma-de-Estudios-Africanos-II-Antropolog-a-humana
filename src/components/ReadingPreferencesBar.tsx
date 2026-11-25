@@ -3,7 +3,6 @@ import {
   BookOpen,
   ChevronLeft,
   ChevronRight,
-  Search,
   Type,
   X,
 } from 'lucide-react';
@@ -24,12 +23,12 @@ export interface ReadingPrefs {
 }
 
 export const DEFAULT_READING_PREFS: ReadingPrefs = {
-  fontScale: 'normal',
+  fontScale: 'large',
   paperTone: 'canvas',
-  lineSpacing: 'standard',
+  lineSpacing: 'relaxed',
 };
 
-const READING_PREFS_KEY = 'ulpgc_dea_reading_prefs_v1';
+const READING_PREFS_KEY = 'ulpgc_dea_reading_prefs_v2';
 
 export function loadReadingPrefs(): ReadingPrefs {
   if (typeof window === 'undefined') return DEFAULT_READING_PREFS;
@@ -38,11 +37,17 @@ export function loadReadingPrefs(): ReadingPrefs {
     if (!raw) return DEFAULT_READING_PREFS;
     const parsed = JSON.parse(raw) as Partial<ReadingPrefs>;
     const fontScale: FontScaleOption =
-      parsed.fontScale === 'large' || parsed.fontScale === 'xlarge' ? parsed.fontScale : 'normal';
+      parsed.fontScale === 'normal' ||
+      parsed.fontScale === 'large' ||
+      parsed.fontScale === 'xlarge'
+        ? parsed.fontScale
+        : DEFAULT_READING_PREFS.fontScale;
     const paperTone: PaperToneOption =
       parsed.paperTone === 'warm' || parsed.paperTone === 'contrast' ? parsed.paperTone : 'canvas';
     const lineSpacing: LineSpacingOption =
-      parsed.lineSpacing === 'relaxed' ? 'relaxed' : 'standard';
+      parsed.lineSpacing === 'standard' || parsed.lineSpacing === 'relaxed'
+        ? parsed.lineSpacing
+        : DEFAULT_READING_PREFS.lineSpacing;
     return { fontScale, paperTone, lineSpacing };
   } catch {
     return DEFAULT_READING_PREFS;
@@ -80,9 +85,9 @@ export function ReadingPrefsInlineStrip({
   compact = false,
 }: ReadingPrefsInlineStripProps) {
   const scaleOptions: Array<{ id: FontScaleOption; label: string; aria: string }> = [
-    { id: 'normal', label: 'A', aria: 'Tamaño de texto estándar' },
-    { id: 'large', label: 'A+', aria: 'Tamaño de texto grande' },
-    { id: 'xlarge', label: 'A++', aria: 'Tamaño de texto muy grande' },
+    { id: 'normal', label: 'A', aria: 'Tamaño de letra estándar (17 px)' },
+    { id: 'large', label: 'A+', aria: 'Tamaño de letra grande (18,5 px)' },
+    { id: 'xlarge', label: 'A++', aria: 'Tamaño de letra muy grande (20,5 px)' },
   ];
 
   const toneOptions: Array<{ id: PaperToneOption; label: string }> = [
@@ -100,7 +105,7 @@ export function ReadingPrefsInlineStrip({
       {!compact && (
         <span className="font-mono text-xs text-ink-muted inline-flex items-center gap-1.5 mr-1">
           <Type className="w-3.5 h-3.5 text-ochre" aria-hidden="true" />
-          <span>Lectura cómoda:</span>
+          <span>Tamaño y lectura:</span>
         </span>
       )}
 
@@ -119,7 +124,7 @@ export function ReadingPrefsInlineStrip({
               aria-label={opt.aria}
               aria-pressed={active}
               onClick={() => onChange({ ...prefs, fontScale: opt.id })}
-              className={`min-h-[36px] min-w-[38px] px-2.5 py-1 font-mono text-xs rounded-xs transition-colors whitespace-nowrap cursor-pointer ${
+              className={`min-h-[36px] min-w-[40px] px-2.5 py-1 font-mono text-xs rounded-xs transition-colors whitespace-nowrap cursor-pointer ${
                 active
                   ? 'bg-ink text-white font-semibold'
                   : 'text-ink-muted hover:text-ink'
@@ -174,7 +179,7 @@ export function ReadingPrefsInlineStrip({
         }`}
       >
         <AlignJustify className="w-3.5 h-3.5" aria-hidden="true" />
-        <span>Interlineado amplio</span>
+        <span>Interlineado</span>
       </button>
     </div>
   );
@@ -199,8 +204,6 @@ export function ReadingModeToolbar({
   activeBlockId,
   onChangePrefs,
   onNavigateChapter,
-  onOpenSearch,
-  onOpenGlossary,
   onExitReadingMode,
 }: ReadingModeToolbarProps) {
   const activeIdx = Math.max(
@@ -211,17 +214,23 @@ export function ReadingModeToolbar({
   const prev = activeIdx > 0 ? COURSE_CHAPTERS[activeIdx - 1] : null;
   const next = activeIdx < COURSE_CHAPTERS.length - 1 ? COURSE_CHAPTERS[activeIdx + 1] : null;
   const activeBlock = getBlockMeta(activeBlockId);
+  const pct = Math.round(scrollProgress * 100);
 
   return (
     <div
       role="region"
       data-sticky-topbar="true"
-      aria-label="Barra de herramientas de Modo Lectura"
+      aria-label="Barra de herramientas de Modo solo lectura"
       className="sticky top-0 z-[45] bg-canvas/95 backdrop-blur-xs border-b border-hairline no-print shadow-xs"
     >
-      <div className="max-w-[960px] mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2.5">
-        {/* Left: Current position & Prev/Next chapter */}
+      <div className="max-w-[980px] mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2.5">
+        {/* Left: Solo lectura indicator + Direct Chapter Selector + Prev/Next */}
         <div className="flex items-center gap-1.5 min-w-0">
+          <span className="hidden lg:inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-ochre pr-2 border-r border-hairline whitespace-nowrap">
+            <BookOpen className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+            <span>Solo lectura · {pct}%</span>
+          </span>
+
           <button
             type="button"
             disabled={!prev}
@@ -232,14 +241,22 @@ export function ReadingModeToolbar({
             <ChevronLeft className="w-4 h-4" aria-hidden="true" />
           </button>
 
-          <div className="px-2 min-w-0 hidden sm:flex flex-col">
-            <span className="font-mono text-[11px] text-ochre font-medium truncate">
-              Modo Lectura · Bloque {activeBlock.roman}
-            </span>
-            <span className="text-xs font-semibold text-ink truncate max-w-[200px]">
-              {current.shortLabel}
-            </span>
-          </div>
+          <label className="sr-only" htmlFor="solo-lectura-chapter-select">
+            Cambiar de apartado en modo solo lectura
+          </label>
+          <select
+            id="solo-lectura-chapter-select"
+            value={current.id}
+            onChange={(e) => onNavigateChapter(e.target.value)}
+            aria-label={`Apartado actual: Bloque ${activeBlock.roman}, ${current.label}`}
+            className="min-h-[38px] max-w-[190px] sm:max-w-[230px] px-2.5 py-1 text-xs font-medium bg-paper text-ink border border-hairline rounded hover:border-ink cursor-pointer truncate"
+          >
+            {COURSE_CHAPTERS.map((ch) => (
+              <option key={ch.id} value={ch.id}>
+                {ch.num} · {ch.shortLabel}
+              </option>
+            ))}
+          </select>
 
           <button
             type="button"
@@ -252,41 +269,19 @@ export function ReadingModeToolbar({
           </button>
         </div>
 
-        {/* Center: Compact reading ergonomics controls */}
+        {/* Center: Compact reading ergonomics controls (A / A+ / A++ · Paper · Spacing) */}
         <ReadingPrefsInlineStrip prefs={prefs} onChange={onChangePrefs} compact />
 
-        {/* Right: Quick Search, Glossary, Exit */}
-        <div className="flex items-center gap-1.5 shrink-0">
-          <button
-            type="button"
-            onClick={onOpenSearch}
-            aria-label="Buscar en el módulo (Ctrl+K)"
-            className="min-h-[38px] px-2.5 py-1 text-xs font-mono text-ink bg-paper border border-hairline rounded hover:border-ink inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
-          >
-            <Search className="w-3.5 h-3.5 text-ochre" aria-hidden="true" />
-            <span className="hidden md:inline">Buscar</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenGlossary}
-            aria-label="Abrir glosario técnico"
-            className="min-h-[38px] px-2.5 py-1 text-xs font-mono text-ink bg-paper border border-hairline rounded hover:border-ink inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
-          >
-            <BookOpen className="w-3.5 h-3.5 text-ochre" aria-hidden="true" />
-            <span className="hidden md:inline">Glosario</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onExitReadingMode}
-            className="min-h-[38px] px-3 py-1 text-xs font-semibold text-white bg-ink rounded inline-flex items-center gap-1.5 hover:bg-ochre transition-colors whitespace-nowrap cursor-pointer"
-            aria-label="Salir del Modo Lectura (tecla Escape)"
-          >
-            <X className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Salir</span>
-          </button>
-        </div>
+        {/* Right: Exit Solo Lectura */}
+        <button
+          type="button"
+          onClick={onExitReadingMode}
+          className="min-h-[38px] px-3.5 py-1 text-xs font-semibold text-white bg-ink rounded inline-flex items-center gap-1.5 hover:bg-ochre transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+          aria-label="Salir del Modo solo lectura (tecla Escape)"
+        >
+          <X className="w-3.5 h-3.5" aria-hidden="true" />
+          <span>Salir</span>
+        </button>
       </div>
 
       {/* Reading progress hairline */}

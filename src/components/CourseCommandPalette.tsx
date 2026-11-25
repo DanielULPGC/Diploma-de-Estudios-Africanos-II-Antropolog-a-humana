@@ -345,15 +345,31 @@ export function CourseCommandPalette({
         },
       },
       {
+        id: 'ref-cultural-studies-genealogia',
+        category: 'laboratorios',
+        categoryLabel: 'Bloque III · Imaginarios coloniales',
+        title: 'Genealogía colonial del «África misteriosa» (1490–2025) y matriz binaria',
+        subtitle:
+          'Seis estratos históricos, 8 pares dicotómicos (Nosotros/El Otro), postales, publicidad colonial y restitución',
+        meta: '05d · Genealogía',
+        searchBlob: normalizeSearchText(
+          'genealogia colonial africa misteriosa estereotipos coloniales hegel sociedades geograficas berlin 1884 mision civilizadora kipling racismo de mercancia commodity racism mcclintock banania tintin congo postales coloniales alocronismo fabian alegoria maniquea restitucion sarr savoy bronces benin'
+        ),
+        action: {
+          sectionId: 'sec-cultural-studies',
+          culturalStudies: { tab: 'genealogia-colonial' },
+        },
+      },
+      {
         id: 'ref-cultural-studies-tropos',
         category: 'laboratorios',
         categoryLabel: 'Bloque III · Cultural Studies',
-        title: 'El «África misteriosa»: 8 tropos, imaginarios y estereotipos',
+        title: 'El «África misteriosa»: 12 tropos, imaginarios y estereotipos coloniales',
         subtitle:
-          'Continente oscuro, ciudades perdidas, safari sin ciudadanos, white savior, tribalismo y exposiciones coloniales',
-        meta: '05d · Cultural Studies',
+          'Continente oscuro, misión civilizadora, commodity racism, buen salvaje, arte primitivo, safari y white savior',
+        meta: '05d · 12 Tropos',
         searchBlob: normalizeSearchText(
-          'cultural studies africa misteriosa imaginarios estereotipos continente oscuro corazon de las tinieblas stanley conrad achebe mudimbe biblioteca colonial edward said chimamanda adichie historia unica binyavanga wainaina mbembe ngugi white savior salvador blanco afropesimismo safari tribu saartjie baartman zoos humanos fanon'
+          'cultural studies africa misteriosa imaginarios estereotipos coloniales 12 tropos continente oscuro corazon de las tinieblas stanley conrad achebe mudimbe biblioteca colonial edward said chimamanda adichie historia unica binyavanga wainaina mbembe ngugi white savior salvador blanco afropesimismo safari tribu saartjie baartman zoos humanos fanon mision civilizadora kipling commodity racism mcclintock buen salvaje arte primitivo sally price sarr savoy'
         ),
         action: {
           sectionId: 'sec-cultural-studies',
@@ -364,11 +380,12 @@ export function CourseCommandPalette({
         id: 'ref-cultural-studies-hall-lab',
         category: 'laboratorios',
         categoryLabel: 'Bloque III · Laboratorio',
-        title: 'Laboratorio de decodificación de Stuart Hall (lectura dominante, negociada y oposicional)',
-        subtitle: 'Análisis de sinopsis, titulares de prensa, safaris, campañas ONG y cine comercial sobre África',
+        title: 'Laboratorio de decodificación de Stuart Hall (7 piezas mediáticas)',
+        subtitle:
+          'Novela imperial, prensa, publicidad de cacao, cómic colonial, safari, campañas ONG y cine comercial',
         meta: '05d · Stuart Hall',
         searchBlob: normalizeSearchText(
-          'laboratorio decodificacion codificacion stuart hall lectura dominante negociada oposicional contra narrativas literatura africana ousmane sembene fespaco seydou keita malick sidibe afrofuturismo africanfuturism nnedi okorafor'
+          'laboratorio decodificacion codificacion stuart hall lectura dominante negociada oposicional publicidad cacao chocolate comic colonial tintin contra narrativas literatura africana ousmane sembene fespaco seydou keita malick sidibe afrofuturismo africanfuturism nnedi okorafor'
         ),
         action: {
           sectionId: 'sec-cultural-studies',

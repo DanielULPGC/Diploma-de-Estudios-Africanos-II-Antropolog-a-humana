@@ -470,6 +470,42 @@ const CURATED_MODULE_TERMS: GlossaryTerm[] = [
       'Práctica cinematográfica impulsada en África Occidental por Jean Rouch desde los años cincuenta en la que los propios protagonistas africanos improvisan y coescriben relatos sobre su realidad social, rompiendo la distancia vertical entre cámara etnográfica y sujetos filmados.',
     moduleContext: 'Bloque III · 05c. Antropología visual',
   },
+  {
+    id: 'alocronismo',
+    term: 'Alocronismo (negación de la coetaneidad)',
+    category: 'metodos',
+    categoryLabel: 'Métodos y Datación',
+    definition:
+      'Mecanismo discursivo identificado por Johannes Fabian (Time and the Other, 1983) mediante el cual los discursos coloniales y turísticos sitúan a las sociedades africanas contemporáneas en un tiempo pasado («primitivo», «ancestral», «detenido»), negándoles pertenencia al presente compartido.',
+    moduleContext: 'Bloque III · 05d. Cultural Studies',
+  },
+  {
+    id: 'alegoria-maniquea',
+    term: 'Alegoría maniquea y binarismo colonial',
+    category: 'metodos',
+    categoryLabel: 'Métodos y Datación',
+    definition:
+      'Arquitectura simbólica analizada por Abdul JanMohamed (1985) y Stuart Hall (1997) que organiza la representación colonial en pares opuestos jerárquicos (historia/naturaleza, nación/tribu, ciencia/magia, arte/fetiche, salvador/víctima) para fijar la superioridad moral y técnica del colonizador.',
+    moduleContext: 'Bloque III · 05d. Cultural Studies',
+  },
+  {
+    id: 'racismo-de-mercancia',
+    term: 'Racismo de mercancía (Commodity racism)',
+    category: 'metodos',
+    categoryLabel: 'Métodos y Datación',
+    definition:
+      'Concepto de Anne McClintock (Imperial Leather, 1995) que explica cómo la publicidad, los envases litografiados (cacao, café, jabón, aceite de palma) y las postales de masas introdujeron los estereotipos raciales e imperiales en la vida doméstica cotidiana europea desde finales del siglo XIX.',
+    moduleContext: 'Bloque III · 05d. Cultural Studies',
+  },
+  {
+    id: 'mision-civilizadora',
+    term: 'Misión civilizadora y paternalismo colonial',
+    category: 'metodos',
+    categoryLabel: 'Métodos y Datación',
+    definition:
+      'Doctrina ideológica imperial (mission civilisatrice francesa, White Man’s Burden de Rudyard Kipling) que presentó la conquista militar, el trabajo forzado y la extracción económica de África como un supuesto deber filantrópico, educativo y sanitario hacia pueblos infantilizados.',
+    moduleContext: 'Bloque III · 05d. Cultural Studies',
+  },
 ];
 
 function normalizeKey(value: string): string {

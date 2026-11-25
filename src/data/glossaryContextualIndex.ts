@@ -44,6 +44,8 @@ import {
   VISUAL_METHODOLOGY_AXES,
 } from './visualAnthropologyAfricaData';
 import {
+  COLONIAL_BINARY_PAIRS,
+  COLONIAL_GENEALOGY_PHASES,
   COUNTER_NARRATIVE_DOMAINS,
   CULTURAL_STUDIES_THEORISTS,
   DECODING_ARTIFACTS,
@@ -520,6 +522,42 @@ const CURATED_EXTENDED_NOTES: Record<string, CuratedExtendedNote> = {
       'Eje central de la guía de método visual del apartado 05c (AntropologiaVisual.net).',
     ],
     relatedTermIds: ['antropologia-visual', 'regimen-representacion'],
+  },
+  alocronismo: {
+    extendedDefinition:
+      'Johannes Fabian demostró que la antropología colonial clásica convivía con las sociedades africanas en el trabajo de campo, pero al redactar sus textos las expulsaba a un tiempo «pasado» («primitivo», «prehistórico», «atemporal»). Ese mismo alocronismo sobrevive hoy en folletos de safari, documentales exotizantes y novelas de aventuras.',
+    keyPoints: [
+      'Convierte la distancia geográfica y colonial en una falsa distancia evolutiva o temporal.',
+      'Se rompe reconociendo la coetaneidad plena, las ciudades contemporáneas y el africanfuturism.',
+    ],
+    relatedTermIds: ['alegoria-maniquea', 'biblioteca-colonial', 'regimen-representacion'],
+  },
+  'alegoria-maniquea': {
+    extendedDefinition:
+      'Abdul JanMohamed y Stuart Hall mostraron que el estereotipo colonial funciona como una economía binaria rígida (historia/naturaleza, nación/tribu, ciencia/magia, arte/fetiche, salvador/víctima). Incluso los estereotipos aparentemente «positivos» («buen salvaje», «ritmo en la sangre») reproducen la misma frontera esencialista.',
+    keyPoints: [
+      'Permite auditar titulares, películas y manuales identificando qué polo se asigna a Europa y cuál a África.',
+      'Eje de la Matriz de dicotomías coloniales del apartado 05d (Genealogía colonial).',
+    ],
+    relatedTermIds: ['alocronismo', 'regimen-representacion', 'mito-del-salvaje'],
+  },
+  'racismo-de-mercancia': {
+    extendedDefinition:
+      'Anne McClintock demostró en Imperial Leather (1995) que el racismo científico del siglo XIX se convirtió en cultura popular masiva cuando la industria publicitaria llevó el imperio a los hogares europeos mediante latas de cacao, café, aceite de palma, jabón (Pears) y carteles comerciales (Banania).',
+    keyPoints: [
+      'Explica la persistencia de clichés del «África misteriosa» en el marketing gourmet y turístico actual.',
+      'Se analiza con la fuente histórica CS-06 y el caso práctico de publicidad en el laboratorio de Stuart Hall.',
+    ],
+    relatedTermIds: ['regimen-representacion', 'mision-civilizadora', 'codificacion-decodificacion'],
+  },
+  'mision-civilizadora': {
+    extendedDefinition:
+      'Bajo fórmulas como la mission civilisatrice francesa o The White Man’s Burden (Kipling, 1899), las potencias europeas legitimaron el reparto de Berlín (1884–1885), el trabajo forzado y la extracción de recursos como una supuesta tutela moral. Su huella perdura en el complejo contemporáneo del «salvador blanco».',
+    keyPoints: [
+      'Ocultaba que ferrocarriles y puertos coloniales se diseñaron para extraer materias primas hacia la metrópoli.',
+      'Respondida críticamente por Aimé Césaire (1950), Frantz Fanon (1952) y Walter Rodney (1972).',
+    ],
+    relatedTermIds: ['biblioteca-colonial', 'racismo-de-mercancia', 'alegoria-maniquea'],
   },
 };
 
@@ -1022,6 +1060,41 @@ function getCourseCorpusDocs(): IndexedCourseDocument[] {
       action: {
         sectionId: 'sec-cultural-studies',
         culturalStudies: { tab: 'marco-teorico' },
+      },
+    });
+  });
+
+  COLONIAL_GENEALOGY_PHASES.forEach((ph) => {
+    pushDoc(docs, {
+      id: `cs-phase-${ph.id}`,
+      sectionId: 'sec-cultural-studies',
+      sectionLabel: `05d · Genealogía colonial (${ph.period})`,
+      itemTitle: `${ph.num}. ${ph.title}`,
+      text: `${ph.apparatus}. ${ph.summary} ${ph.archiveQuote} ${ph.stereotypesForged.join(' ')} ${ph.materialInterests} ${ph.historicalRefutation}`,
+      explicitGlossaryIds: ph.glossaryTermId
+        ? [ph.glossaryTermId, 'regimen-representacion', 'imaginario-colectivo']
+        : ['regimen-representacion', 'imaginario-colectivo'],
+      action: {
+        sectionId: 'sec-cultural-studies',
+        culturalStudies: { tab: 'genealogia-colonial', phaseId: ph.id },
+      },
+    });
+  });
+
+  COLONIAL_BINARY_PAIRS.forEach((bp) => {
+    pushDoc(docs, {
+      id: `cs-binary-${bp.id}`,
+      sectionId: 'sec-cultural-studies',
+      sectionLabel: '05d · Matriz de dicotomías coloniales',
+      itemTitle: `${bp.europePole} / ${bp.africaStereotypePole}`,
+      text: `${bp.axisLabel}. ${bp.colonialFunction} ${bp.exampleInMedia} ${bp.criticalReframing}`,
+      explicitGlossaryIds:
+        bp.axis === 'temporal'
+          ? ['alegoria-maniquea', 'alocronismo']
+          : ['alegoria-maniquea', 'regimen-representacion'],
+      action: {
+        sectionId: 'sec-cultural-studies',
+        culturalStudies: { tab: 'genealogia-colonial' },
       },
     });
   });

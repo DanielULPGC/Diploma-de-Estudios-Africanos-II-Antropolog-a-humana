@@ -67,8 +67,9 @@ export interface CourseDeepAction {
     filmId?: string;
   };
   culturalStudies?: {
-    tab?: 'marco-teorico' | 'tropos' | 'decodificador' | 'contranarrativas';
+    tab?: 'marco-teorico' | 'genealogia-colonial' | 'tropos' | 'decodificador' | 'contranarrativas';
     tropeId?: string;
+    phaseId?: string;
   };
   kingdomId?: KingdomId;
   glossaryTermId?: string;
@@ -205,8 +206,8 @@ export const COURSE_CHAPTERS: CourseChapterMeta[] = [
     label: 'Cultural Studies: el «África misteriosa»',
     shortLabel: 'Cultural Studies',
     summary:
-      'Stuart Hall, Mudimbe, Said, Wainaina y Adichie: 8 tropos del «África misteriosa», laboratorio de decodificación y contra-narrativas africanas.',
-    durationMin: 8,
+      'Genealogía colonial (1490–2025), matriz binaria de estereotipos, 12 tropos del «África misteriosa», 17 fuentes históricas, laboratorio de Stuart Hall y contra-narrativas africanas.',
+    durationMin: 11,
     blockId: 'bloque-3',
   },
   {

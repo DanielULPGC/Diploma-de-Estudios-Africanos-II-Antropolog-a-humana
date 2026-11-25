@@ -306,7 +306,7 @@ export function ChapterIndexNav({
               className="min-h-[34px] px-2.5 py-1 text-[11px] font-medium text-ink bg-paper border border-hairline rounded hover:border-ink inline-flex items-center gap-1.5 cursor-pointer"
             >
               <BookOpen className="w-3.5 h-3.5 text-ochre" aria-hidden="true" />
-              <span>Modo Lectura</span>
+              <span>Modo solo lectura</span>
             </button>
 
             <button

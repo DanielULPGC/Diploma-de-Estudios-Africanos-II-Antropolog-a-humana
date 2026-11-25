@@ -3,13 +3,20 @@ import {
   ArrowLeftRight,
   ArrowUpRight,
   BookOpen,
+  Clock,
   Eye,
   Image as ImageIcon,
   Layers,
+  Scale,
+  Search,
   Sparkles,
+  X,
   ZoomIn,
 } from 'lucide-react';
 import {
+  BINARY_AXIS_FILTERS,
+  COLONIAL_BINARY_PAIRS,
+  COLONIAL_GENEALOGY_PHASES,
   COUNTER_NARRATIVE_DOMAINS,
   CULTURAL_STUDIES_BIBLIOGRAPHY,
   CULTURAL_STUDIES_THEORISTS,
@@ -18,21 +25,27 @@ import {
   MYSTERIOUS_AFRICA_TROPES,
   SECTION_GALLERY_META,
   TROPE_MEDIUM_FILTERS,
+  type BinaryAxisId,
   type CulturalStudiesTabId,
   type CulturalVisualPlateId,
   type CulturalVisualReferencePlate,
   type HallReadingPosition,
   type TropeMediumId,
 } from '../data/culturalStudiesAfricaData';
-import { clearPendingCourseDetail, consumePendingCourseDetail } from '../data/courseNavigation';
+import {
+  clearPendingCourseDetail,
+  consumePendingCourseDetail,
+  normalizeSearchText,
+} from '../data/courseNavigation';
 import { GlossaryTermTrigger } from './GlossaryContext';
 import { useLightbox, type LightboxItem } from './LightboxContext';
 
 const MODULE_TABS: Array<{ id: CulturalStudiesTabId; label: string }> = [
   { id: 'marco-teorico', label: 'I. Marco teórico · Cultural Studies' },
-  { id: 'tropos', label: 'II. Anatomía del «África misteriosa» (8 tropos)' },
-  { id: 'decodificador', label: 'III. Laboratorio de lectura · Stuart Hall' },
-  { id: 'contranarrativas', label: 'IV. Contra-narrativas y creación africana' },
+  { id: 'genealogia-colonial', label: 'II. Genealogía colonial (1490–2025)' },
+  { id: 'tropos', label: 'III. Estereotipos del «África misteriosa» (12)' },
+  { id: 'decodificador', label: 'IV. Laboratorio de lectura · Stuart Hall' },
+  { id: 'contranarrativas', label: 'V. Contra-narrativas y creación africana' },
 ];
 
 const HALL_POSITIONS: Array<{ id: HallReadingPosition; label: string; subtitle: string }> = [
@@ -100,7 +113,7 @@ function HistoricalSourceGallery({
     >
       <div className="flex flex-col gap-1.5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <span className="font-mono text-xs text-ochre">
+          <span className="font-mono text-xs text-ochre tabular-nums">
             {meta.kicker} · {plates.length} fuentes documentales
           </span>
           <span className="font-mono text-[11px] text-ink-muted">
@@ -122,6 +135,7 @@ function HistoricalSourceGallery({
           const isLinkedActive =
             Boolean(activeLinkedId) &&
             (plate.linkedTheoristId === activeLinkedId ||
+              plate.linkedPhaseId === activeLinkedId ||
               plate.linkedTropeId === activeLinkedId ||
               plate.linkedArtifactId === activeLinkedId ||
               plate.linkedDomainId === activeLinkedId);
@@ -134,13 +148,11 @@ function HistoricalSourceGallery({
               }`}
             >
               <div className="flex flex-col">
-                {/* Archival Catalog Top Header */}
                 <div className="px-3.5 py-2 bg-canvas border-b border-hairline font-mono text-[11px] flex items-center justify-between gap-2 tabular-nums">
                   <span className="font-semibold text-ink">{plate.sourceCode}</span>
                   <span className="text-ochre truncate">{plate.datePeriod}</span>
                 </div>
 
-                {/* Clickable Plate Frame */}
                 <button
                   type="button"
                   onClick={() => onOpenSingle(plate)}
@@ -173,7 +185,6 @@ function HistoricalSourceGallery({
                   </span>
                 </button>
 
-                {/* Historical Source Metadata Caption */}
                 <figcaption className="p-4 flex flex-col gap-2">
                   <div className="font-mono text-[11px] text-lapis leading-snug">
                     {plate.figureNum} · {plate.sourceType}
@@ -196,7 +207,6 @@ function HistoricalSourceGallery({
                 </figcaption>
               </div>
 
-              {/* Archival Action Bar */}
               <div className="px-3.5 py-2 border-t border-hairline bg-canvas flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
                   <button
@@ -332,26 +342,42 @@ function InlineSourceFigure({
 
 export function CulturalStudiesAfricaModule() {
   const { openSingle, openCompare } = useLightbox();
-  const [activeTab, setActiveTab] = useState<CulturalStudiesTabId>('marco-teorico');
+  const [activeTab, setActiveTab] = useState<CulturalStudiesTabId>('genealogia-colonial');
   const [selectedTheoristId, setSelectedTheoristId] = useState<string>(
     CULTURAL_STUDIES_THEORISTS[0].id
   );
+  const [selectedPhaseId, setSelectedPhaseId] = useState<string>(
+    COLONIAL_GENEALOGY_PHASES[2].id
+  );
+  const [selectedBinaryAxis, setSelectedBinaryAxis] = useState<BinaryAxisId>('todos');
   const [selectedMedium, setSelectedMedium] = useState<TropeMediumId>('todos');
+  const [tropeQuery, setTropeQuery] = useState<string>('');
   const [selectedTropeId, setSelectedTropeId] = useState<string>(MYSTERIOUS_AFRICA_TROPES[0].id);
   const [selectedArtifactId, setSelectedArtifactId] = useState<string>(DECODING_ARTIFACTS[0].id);
   const [readingPosition, setReadingPosition] = useState<HallReadingPosition>('oposicional');
   const [brokenPlates, setBrokenPlates] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    const applyDetail = (detail?: { tab?: CulturalStudiesTabId; tropeId?: string }) => {
+    const applyDetail = (detail?: {
+      tab?: CulturalStudiesTabId;
+      tropeId?: string;
+      phaseId?: string;
+    }) => {
       if (!detail) return;
       if (detail.tab) {
         setActiveTab(detail.tab);
+      }
+      if (detail.phaseId) {
+        const foundPhase = COLONIAL_GENEALOGY_PHASES.some((p) => p.id === detail.phaseId);
+        if (foundPhase) {
+          setSelectedPhaseId(detail.phaseId);
+        }
       }
       if (detail.tropeId) {
         const found = MYSTERIOUS_AFRICA_TROPES.some((t) => t.id === detail.tropeId);
         if (found) {
           setSelectedMedium('todos');
+          setTropeQuery('');
           setSelectedTropeId(detail.tropeId);
         }
       }
@@ -363,7 +389,11 @@ export function CulturalStudiesAfricaModule() {
     }
 
     const onOpen = (evt: Event) => {
-      const customEvt = evt as CustomEvent<{ tab?: CulturalStudiesTabId; tropeId?: string }>;
+      const customEvt = evt as CustomEvent<{
+        tab?: CulturalStudiesTabId;
+        tropeId?: string;
+        phaseId?: string;
+      }>;
       clearPendingCourseDetail('culturalStudies');
       applyDetail(customEvt.detail);
     };
@@ -381,10 +411,29 @@ export function CulturalStudiesAfricaModule() {
     [selectedTheoristId]
   );
 
+  const activePhase = useMemo(
+    () =>
+      COLONIAL_GENEALOGY_PHASES.find((p) => p.id === selectedPhaseId) ??
+      COLONIAL_GENEALOGY_PHASES[0],
+    [selectedPhaseId]
+  );
+
+  const filteredBinaryPairs = useMemo(() => {
+    if (selectedBinaryAxis === 'todos') return COLONIAL_BINARY_PAIRS;
+    return COLONIAL_BINARY_PAIRS.filter((pair) => pair.axis === selectedBinaryAxis);
+  }, [selectedBinaryAxis]);
+
   const filteredTropes = useMemo(() => {
-    if (selectedMedium === 'todos') return MYSTERIOUS_AFRICA_TROPES;
-    return MYSTERIOUS_AFRICA_TROPES.filter((t) => t.medium === selectedMedium);
-  }, [selectedMedium]);
+    const q = normalizeSearchText(tropeQuery);
+    return MYSTERIOUS_AFRICA_TROPES.filter((t) => {
+      if (selectedMedium !== 'todos' && t.medium !== selectedMedium) return false;
+      if (!q) return true;
+      const hay = normalizeSearchText(
+        `${t.num} ${t.title} ${t.clicheSignature} ${t.historicalOrigin} ${t.culturalMechanism} ${t.examples} ${t.tags.join(' ')}`
+      );
+      return hay.includes(q);
+    });
+  }, [selectedMedium, tropeQuery]);
 
   const activeTrope = useMemo(() => {
     return (
@@ -412,6 +461,7 @@ export function CulturalStudiesAfricaModule() {
   const platesBySection = useMemo(() => {
     const grouped: Record<CulturalStudiesTabId, CulturalVisualReferencePlate[]> = {
       'marco-teorico': [],
+      'genealogia-colonial': [],
       tropos: [],
       decodificador: [],
       contranarrativas: [],
@@ -422,7 +472,16 @@ export function CulturalStudiesAfricaModule() {
     return grouped;
   }, []);
 
+  const tropesById = useMemo(() => {
+    const map: Record<string, (typeof MYSTERIOUS_AFRICA_TROPES)[number]> = {};
+    for (const t of MYSTERIOUS_AFRICA_TROPES) {
+      map[t.id] = t;
+    }
+    return map;
+  }, []);
+
   const activeTheoristPlate = platesById[activeTheorist.visualPlateId];
+  const activePhasePlate = platesById[activePhase.visualPlateId];
   const activeTropePlate = platesById[activeTrope.visualPlateId];
   const activeArtifactPlate = platesById[activeArtifact.visualPlateId];
 
@@ -442,17 +501,50 @@ export function CulturalStudiesAfricaModule() {
     );
   };
 
+  const handleJumpToTrope = (tropeId: string) => {
+    setSelectedMedium('todos');
+    setTropeQuery('');
+    setSelectedTropeId(tropeId);
+    setActiveTab('tropos');
+    window.setTimeout(() => {
+      document.getElementById('cs-trope-sheet')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  };
+
+  const handleJumpToArtifact = (artifactId: string) => {
+    setSelectedArtifactId(artifactId);
+    setReadingPosition('oposicional');
+    setActiveTab('decodificador');
+    window.setTimeout(() => {
+      document
+        .getElementById('cs-artifact-sheet')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  };
+
   const handleSelectFromGalleryPlate = (plate: CulturalVisualReferencePlate) => {
     if (plate.linkedTheoristId) {
       setSelectedTheoristId(plate.linkedTheoristId);
-      document.getElementById('cs-theorist-sheet')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      document
+        .getElementById('cs-theorist-sheet')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else if (plate.linkedPhaseId) {
+      setSelectedPhaseId(plate.linkedPhaseId);
+      document
+        .getElementById('cs-genealogy-sheet')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else if (plate.linkedTropeId) {
       setSelectedMedium('todos');
+      setTropeQuery('');
       setSelectedTropeId(plate.linkedTropeId);
-      document.getElementById('cs-trope-sheet')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      document
+        .getElementById('cs-trope-sheet')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else if (plate.linkedArtifactId) {
       setSelectedArtifactId(plate.linkedArtifactId);
-      document.getElementById('cs-artifact-sheet')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      document
+        .getElementById('cs-artifact-sheet')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else if (plate.linkedDomainId) {
       document
         .getElementById(`cs-domain-${plate.linkedDomainId}`)
@@ -486,40 +578,56 @@ export function CulturalStudiesAfricaModule() {
       {/* Editorial Masthead */}
       <div className="flex flex-col gap-4">
         <div className="font-mono text-xs tracking-wide text-ochre">
-          05d. Cultural Studies y crítica poscolonial · Imaginarios culturales de África
+          05d. Cultural Studies y crítica poscolonial · Imaginarios y estereotipos coloniales de África
         </div>
 
         <h2
           id="heading-cultural-studies"
           className="font-display text-2xl sm:text-4xl font-semibold tracking-tight leading-[1.12] text-ink max-w-4xl [text-wrap:balance]"
         >
-          El «África misteriosa»: imaginarios, estereotipos y políticas de la representación
+          El «África misteriosa»: genealogía colonial, imaginarios y estereotipos de la representación
         </h2>
 
-        <p className="text-base leading-[1.72] text-ink-muted max-w-[74ch]">
+        <p className="text-base leading-[1.72] text-ink-muted max-w-[76ch]">
           Desde los <em>Cultural Studies</em> (Stuart Hall) y la crítica africana y poscolonial
-          (Mudimbe, Said, Achebe, Wainaina, Adichie y Mbembe), los estereotipos sobre África no son
-          simples errores individuales, sino un{' '}
+          (Mudimbe, Said, Achebe, Fanon, McClintock, Wainaina, Adichie y Mbembe), los estereotipos
+          coloniales sobre África no son simples errores aislados, sino un{' '}
           <strong className="text-ink">
             <GlossaryTermTrigger termId="regimen-representacion" tone="ochre">
               régimen de representación
             </GlossaryTermTrigger>
           </strong>{' '}
-          alimentado por la{' '}
+          forjado durante cinco siglos en la{' '}
           <GlossaryTermTrigger termId="biblioteca-colonial" tone="lapis">
             biblioteca colonial
+          </GlossaryTermTrigger>
+          : desde los mapas de <em>terra incognita</em> y la{' '}
+          <GlossaryTermTrigger termId="mision-civilizadora" tone="ochre">
+            misión civilizadora
           </GlossaryTermTrigger>{' '}
-          y reproducido en literatura de aventuras, prensa, cine, cómics, turismo y publicidad. Cada
-          uno de los cuatro apartados integra su propia{' '}
-          <strong>galería de fuentes históricas visuales</strong> para contrastar el imaginario
-          colonial con el contra-archivo africano.
+          hasta las postales, el{' '}
+          <GlossaryTermTrigger termId="racismo-de-mercancia" tone="lapis">
+            racismo de mercancía
+          </GlossaryTermTrigger>
+          , el{' '}
+          <GlossaryTermTrigger termId="alocronismo" tone="forest">
+            alocronismo
+          </GlossaryTermTrigger>{' '}
+          y los algoritmos actuales. Cada uno de los cinco apartados integra su propia{' '}
+          <strong className="text-ink">galería de fuentes históricas visuales</strong> para
+          contrastar el archivo colonial con el contra-archivo africano.
         </p>
 
         {/* Quiet unboxed archival overview strip */}
         <div className="pt-3 border-t border-hairline flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-mono text-ink-muted tabular-nums">
           <span>
-            <strong className="text-ink font-semibold">{CULTURAL_STUDIES_THEORISTS.length}</strong>{' '}
-            referentes teóricos clave
+            <strong className="text-ink font-semibold">{COLONIAL_GENEALOGY_PHASES.length}</strong>{' '}
+            estratos coloniales (1490–2025)
+          </span>
+          <span aria-hidden="true">·</span>
+          <span>
+            <strong className="text-ink font-semibold">{COLONIAL_BINARY_PAIRS.length}</strong> pares
+            binarios de estereotipación
           </span>
           <span aria-hidden="true">·</span>
           <span>
@@ -528,18 +636,15 @@ export function CulturalStudiesAfricaModule() {
           </span>
           <span aria-hidden="true">·</span>
           <span>
-            <strong className="text-ink font-semibold">{DECODING_ARTIFACTS.length}</strong> casos de
-            decodificación (Stuart Hall)
+            <strong className="text-ink font-semibold">{DECODING_ARTIFACTS.length}</strong> piezas
+            en el laboratorio Stuart Hall
           </span>
           <span aria-hidden="true">·</span>
           <span>
-            <strong className="text-ink font-semibold">{COUNTER_NARRATIVE_DOMAINS.length}</strong>{' '}
-            contra-archivos africanos
-          </span>
-          <span aria-hidden="true">·</span>
-          <span>
-            <strong className="text-ink font-semibold">{CULTURAL_STUDIES_VISUAL_PLATES.length}</strong>{' '}
-            fuentes históricas en 4 galerías
+            <strong className="text-ink font-semibold">
+              {CULTURAL_STUDIES_VISUAL_PLATES.length}
+            </strong>{' '}
+            fuentes históricas en 5 galerías
           </span>
         </div>
       </div>
@@ -548,7 +653,7 @@ export function CulturalStudiesAfricaModule() {
       <div
         id="cs-module-tabs"
         role="tablist"
-        aria-label="Apartados del módulo de Imaginarios culturales de África"
+        aria-label="Apartados del módulo de Imaginarios y estereotipos coloniales de África"
         className="flex flex-wrap items-center gap-2 border-b border-hairline pb-3 scroll-mt-24"
       >
         {MODULE_TABS.map((tab) => {
@@ -563,7 +668,7 @@ export function CulturalStudiesAfricaModule() {
               aria-selected={selected}
               aria-controls={`panel-cs-${tab.id}`}
               onClick={() => setActiveTab(tab.id)}
-              className={`min-h-[40px] px-4 py-2 text-xs font-semibold rounded border transition-colors whitespace-nowrap shrink-0 cursor-pointer inline-flex items-center gap-2 ${
+              className={`min-h-[40px] px-3.5 py-2 text-xs font-semibold rounded border transition-colors whitespace-nowrap shrink-0 cursor-pointer inline-flex items-center gap-2 ${
                 selected
                   ? 'bg-ink text-white border-ink'
                   : 'bg-paper text-ink-muted border-hairline hover:border-ink hover:text-ink'
@@ -582,7 +687,7 @@ export function CulturalStudiesAfricaModule() {
         })}
       </div>
 
-      {/* TAB 1: THEORETICAL FRAMEWORK + HISTORICAL SOURCE GALLERY I */}
+      {/* TAB I: THEORETICAL FRAMEWORK + HISTORICAL SOURCE GALLERY I */}
       {activeTab === 'marco-teorico' && (
         <div
           id="panel-cs-marco-teorico"
@@ -591,7 +696,6 @@ export function CulturalStudiesAfricaModule() {
           className="flex flex-col gap-8"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left selector list */}
             <div
               className="lg:col-span-5 flex flex-col border-t border-rule"
               role="listbox"
@@ -632,7 +736,6 @@ export function CulturalStudiesAfricaModule() {
               })}
             </div>
 
-            {/* Right detail sheet */}
             <article
               id="cs-theorist-sheet"
               aria-live="polite"
@@ -684,7 +787,8 @@ export function CulturalStudiesAfricaModule() {
               </div>
 
               <div className="pt-3 border-t border-hairline font-mono text-xs text-ink-muted">
-                <strong className="text-ink">Obra de referencia:</strong> {activeTheorist.landmarkWork}
+                <strong className="text-ink">Obra de referencia:</strong>{' '}
+                {activeTheorist.landmarkWork}
               </div>
             </article>
           </div>
@@ -703,7 +807,357 @@ export function CulturalStudiesAfricaModule() {
         </div>
       )}
 
-      {/* TAB 2: ANATOMY OF "MYSTERIOUS AFRICA" TROPES + HISTORICAL SOURCE GALLERY II */}
+      {/* TAB II: COLONIAL GENEALOGY & BINARY STEREOTYPE ARCHITECTURE + GALLERY II */}
+      {activeTab === 'genealogia-colonial' && (
+        <div
+          id="panel-cs-genealogia-colonial"
+          role="tabpanel"
+          aria-labelledby="tab-cs-genealogia-colonial"
+          className="flex flex-col gap-10"
+        >
+          {/* Part A: 6-Epoch Chronological Strata of the Colonial Imaginary */}
+          <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center gap-2 font-mono text-xs text-ochre">
+                <Clock className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>Arqueología del estereotipo · Seis estratos históricos (1490–2025)</span>
+              </div>
+              <h3 className="font-display text-xl sm:text-2xl font-semibold text-ink m-0">
+                Cómo se fabricó el imaginario del «África misteriosa» paso a paso
+              </h3>
+              <p className="text-xs sm:text-sm leading-relaxed text-ink-muted max-w-[78ch] m-0">
+                Los estereotipos coloniales no nacieron de golpe ni son «prejuicios eternos»:
+                respondieron en cada época a intereses económicos y aparatos mediáticos concretos
+                (trata atlántica, sociedades geográficas, reparto de Berlín, publicidad de masas,
+                televisión poscolonial e IA). Seleccione un estrato para examinar sus dispositivos y
+                su refutación documental.
+              </p>
+            </div>
+
+            {/* 6-Epoch Chronological Strip */}
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2"
+              role="tablist"
+              aria-label="Estratos cronológicos de los estereotipos coloniales sobre África"
+            >
+              {COLONIAL_GENEALOGY_PHASES.map((phase) => {
+                const isSelected = phase.id === activePhase.id;
+                return (
+                  <button
+                    key={phase.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isSelected}
+                    onClick={() => setSelectedPhaseId(phase.id)}
+                    className={`text-left px-3.5 py-3 border transition-colors cursor-pointer flex flex-col gap-1 ${
+                      isSelected
+                        ? 'bg-ink text-white border-ink'
+                        : 'bg-paper text-ink border-hairline hover:border-ink'
+                    }`}
+                  >
+                    <div className="flex items-baseline justify-between gap-2 font-mono text-[11px] tabular-nums">
+                      <span className={isSelected ? 'text-white/75' : 'text-ochre font-semibold'}>
+                        {phase.num}
+                      </span>
+                      <span className={isSelected ? 'text-white/90' : 'text-ink-muted'}>
+                        {phase.period}
+                      </span>
+                    </div>
+                    <span className="font-display text-xs font-semibold leading-snug line-clamp-2">
+                      {phase.title}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active Epoch Archival Dossier Sheet */}
+            <article
+              id="cs-genealogy-sheet"
+              aria-live="polite"
+              className="bg-paper border border-hairline border-t-2 border-t-ochre p-6 sm:p-7 flex flex-col gap-6 scroll-mt-24"
+            >
+              <div className="flex flex-col gap-2 pb-4 border-b border-hairline">
+                <div className="font-mono text-xs text-ochre flex flex-wrap items-center gap-x-2 tabular-nums">
+                  <span>Estrato {activePhase.num}</span>
+                  <span aria-hidden="true">·</span>
+                  <span className="font-semibold text-ink">{activePhase.period}</span>
+                  <span aria-hidden="true">·</span>
+                  <span className="text-lapis">{activePhase.apparatus}</span>
+                </div>
+                <h4 className="font-display text-2xl sm:text-3xl font-semibold text-ink leading-tight m-0">
+                  {activePhase.title}
+                </h4>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-7 flex flex-col gap-5">
+                  <p className="text-sm sm:text-base leading-[1.74] text-ink m-0">
+                    {activePhase.summary}
+                  </p>
+
+                  {/* Historical Archival Pull Quote */}
+                  <blockquote className="m-0 py-4 border-y border-hairline flex flex-col gap-1.5">
+                    <p className="font-display italic text-base sm:text-lg leading-relaxed text-ink m-0">
+                      {activePhase.archiveQuote}
+                    </p>
+                    <footer className="font-mono text-[11px] text-ink-muted">
+                      Archivo documental · {activePhase.archiveSource}
+                    </footer>
+                  </blockquote>
+
+                  {/* Material Interests vs Historical Refutation */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="bg-canvas border border-hairline p-4 flex flex-col gap-1.5">
+                      <span className="font-mono text-[11px] font-semibold text-ochre">
+                        Interés material y función colonial
+                      </span>
+                      <p className="text-xs sm:text-sm leading-relaxed text-ink m-0">
+                        {activePhase.materialInterests}
+                      </p>
+                    </div>
+                    <div className="bg-canvas border border-hairline p-4 flex flex-col gap-1.5">
+                      <span className="font-mono text-[11px] font-semibold text-forest">
+                        Desmentido histórico y contra-archivo
+                      </span>
+                      <p className="text-xs sm:text-sm leading-relaxed text-ink m-0">
+                        {activePhase.historicalRefutation}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column: Source Plate + Stereotypes Forged + Cross-links */}
+                <div className="lg:col-span-5 flex flex-col gap-4">
+                  {activePhasePlate && (
+                    <figure className="m-0 bg-canvas border border-hairline overflow-hidden">
+                      <div className="px-3.5 py-2 border-b border-hairline font-mono text-[11px] flex items-center justify-between gap-2 tabular-nums">
+                        <span className="font-semibold text-ink">
+                          {activePhasePlate.sourceCode}
+                        </span>
+                        <span className="text-ochre">{activePhasePlate.datePeriod}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenPlateLightbox(activePhasePlate)}
+                        aria-label={`Ampliar ${activePhasePlate.sourceCode}: ${activePhasePlate.title}`}
+                        className="relative w-full aspect-[4/3] bg-paper overflow-hidden border-b border-hairline cursor-pointer group block"
+                      >
+                        {!brokenPlates[activePhasePlate.id] ? (
+                          <img
+                            src={activePhasePlate.src}
+                            alt={activePhasePlate.alt}
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                            onError={() => markPlateBroken(activePhasePlate.id)}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center gap-1.5 p-4 text-ink-muted">
+                            <ImageIcon className="w-5 h-5 text-ochre" aria-hidden="true" />
+                            <span className="font-mono text-[11px]">
+                              {activePhasePlate.sourceCode}
+                            </span>
+                          </div>
+                        )}
+                        <span
+                          aria-hidden="true"
+                          className="absolute bottom-2 right-2 bg-ink/85 text-white px-2 py-0.5 text-[11px] font-mono inline-flex items-center gap-1"
+                        >
+                          <ZoomIn className="w-3 h-3" />
+                          Ampliar
+                        </span>
+                      </button>
+                      <figcaption className="p-3.5 flex flex-col gap-2 text-xs leading-relaxed text-ink-muted">
+                        <span className="font-display text-sm font-semibold text-ink leading-snug">
+                          {activePhasePlate.title}
+                        </span>
+                        <span>{activePhasePlate.analyticalFocus}</span>
+                        {platesById[activePhasePlate.compareWithId] && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleComparePlates(
+                                activePhasePlate,
+                                platesById[activePhasePlate.compareWithId]
+                              )
+                            }
+                            className="self-start pt-1 font-mono text-[11px] text-forest hover:text-ink inline-flex items-center gap-1 cursor-pointer"
+                          >
+                            <ArrowLeftRight className="w-3 h-3" aria-hidden="true" />
+                            <span>
+                              Contrastar con {platesById[activePhasePlate.compareWithId].sourceCode}
+                            </span>
+                          </button>
+                        )}
+                      </figcaption>
+                    </figure>
+                  )}
+
+                  <div className="bg-canvas border border-hairline p-4 flex flex-col gap-2">
+                    <span className="font-mono text-[11px] font-semibold text-ink">
+                      Estereotipos cristalizados en este estrato
+                    </span>
+                    <ul className="m-0 pl-4 flex flex-col gap-1.5 text-xs leading-relaxed text-ink">
+                      {activePhase.stereotypesForged.map((st) => (
+                        <li key={st}>{st}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Interactive Links to Tropes & Contextual Glossary */}
+                  <div className="pt-2 border-t border-hairline flex flex-col gap-2.5">
+                    {activePhase.glossaryTermId && activePhase.glossaryTermLabel && (
+                      <div className="text-xs text-ink-muted flex flex-wrap items-center gap-x-2">
+                        <span className="font-mono text-[11px]">Concepto clave:</span>
+                        <GlossaryTermTrigger termId={activePhase.glossaryTermId} tone="lapis">
+                          {activePhase.glossaryTermLabel}
+                        </GlossaryTermTrigger>
+                      </div>
+                    )}
+                    <div className="flex flex-wrap items-center gap-2">
+                      {activePhase.linkedTropeIds.map((tid) => {
+                        const t = tropesById[tid];
+                        if (!t) return null;
+                        return (
+                          <button
+                            key={tid}
+                            type="button"
+                            onClick={() => handleJumpToTrope(tid)}
+                            className="min-h-[34px] px-3 py-1 bg-canvas border border-hairline hover:border-ochre text-[11px] font-mono text-ink hover:text-ochre transition-colors inline-flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>
+                              Tropo {t.num} · {t.title.split(' ').slice(0, 4).join(' ')}…
+                            </span>
+                            <ArrowUpRight className="w-3 h-3 shrink-0" aria-hidden="true" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          {/* Part B: Interactive Matrix of Colonial Binarisms ("Nosotros vs. El Otro") */}
+          <div className="pt-8 border-t border-rule flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 font-mono text-xs text-lapis">
+                <Scale className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>
+                  Gramática del estereotipo colonial ·{' '}
+                  <GlossaryTermTrigger termId="alegoria-maniquea" tone="lapis">
+                    Alegoría maniquea y binarismo
+                  </GlossaryTermTrigger>{' '}
+                  (JanMohamed / Hall / Fabian)
+                </span>
+              </div>
+              <h3 className="font-display text-xl sm:text-2xl font-semibold text-ink m-0">
+                Matriz de dicotomías coloniales: «Nosotros» frente al «África misteriosa»
+              </h3>
+              <p className="text-xs sm:text-sm leading-relaxed text-ink-muted max-w-[78ch] m-0">
+                El discurso colonial rara vez inventa una imagen aislada: organiza el mundo en{' '}
+                <strong className="text-ink">pares binarios asimétricos</strong> donde el primer
+                término define a Europa (sujeto histórico) y el segundo encierra a África en la
+                alteridad. Filtre por eje para inspeccionar cómo opera cada dicotomía y cómo
+                reformularla con rigor académico.
+              </p>
+            </div>
+
+            <div
+              className="flex flex-wrap items-center gap-1.5"
+              role="group"
+              aria-label="Filtrar pares binarios coloniales por eje analítico"
+            >
+              {BINARY_AXIS_FILTERS.map((ax) => {
+                const isActive = selectedBinaryAxis === ax.id;
+                const count =
+                  ax.id === 'todos'
+                    ? COLONIAL_BINARY_PAIRS.length
+                    : COLONIAL_BINARY_PAIRS.filter((p) => p.axis === ax.id).length;
+                return (
+                  <button
+                    key={ax.id}
+                    type="button"
+                    aria-pressed={isActive}
+                    onClick={() => setSelectedBinaryAxis(ax.id)}
+                    className={`min-h-[38px] px-3 py-1.5 text-xs font-medium rounded border transition-colors whitespace-nowrap shrink-0 cursor-pointer tabular-nums ${
+                      isActive
+                        ? 'bg-lapis text-white border-lapis'
+                        : 'bg-paper text-ink-muted border-hairline hover:border-ink hover:text-ink'
+                    }`}
+                  >
+                    {ax.label} ({count})
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="border-t border-rule overflow-x-auto">
+              <table className="w-full border-collapse text-left min-w-[760px]">
+                <thead>
+                  <tr className="border-b border-rule bg-paper font-mono text-[11px] text-ink-muted">
+                    <th className="py-3 px-4 font-semibold text-ink w-[19%]">
+                      Polo «Europa / Nosotros»
+                    </th>
+                    <th className="py-3 px-4 font-semibold text-ochre w-[21%]">
+                      Polo «África estereotipada»
+                    </th>
+                    <th className="py-3 px-4 font-semibold text-ink w-[30%]">
+                      Función colonial y ejemplo mediático
+                    </th>
+                    <th className="py-3 px-4 font-semibold text-forest w-[30%]">
+                      Relectura crítica (Diploma)
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-hairline text-xs leading-relaxed">
+                  {filteredBinaryPairs.map((pair) => (
+                    <tr key={pair.id} className="align-top bg-canvas hover:bg-paper/70 transition-colors">
+                      <td className="py-3.5 px-4">
+                        <div className="font-mono text-[10px] text-ink-muted mb-1">
+                          {pair.axisLabel}
+                        </div>
+                        <div className="font-display text-sm font-semibold text-ink">
+                          {pair.europePole}
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <div className="font-display text-sm font-semibold text-ochre">
+                          {pair.africaStereotypePole}
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 text-ink">
+                        <p className="m-0 mb-1.5">{pair.colonialFunction}</p>
+                        <p className="m-0 text-ink-muted italic">Ej.: {pair.exampleInMedia}</p>
+                      </td>
+                      <td className="py-3.5 px-4 text-ink">
+                        <p className="m-0">{pair.criticalReframing}</p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Part C: Historical Source Gallery II (4 new archival plates) */}
+          <HistoricalSourceGallery
+            section="genealogia-colonial"
+            plates={platesBySection['genealogia-colonial']}
+            platesById={platesById}
+            brokenPlates={brokenPlates}
+            onMarkBroken={markPlateBroken}
+            onOpenSingle={handleOpenPlateLightbox}
+            onOpenCompare={handleComparePlates}
+            onSelectFromPlate={handleSelectFromGalleryPlate}
+            activeLinkedId={activePhase.id}
+          />
+        </div>
+      )}
+
+      {/* TAB III: ANATOMY OF 12 "MYSTERIOUS AFRICA" TROPES + HISTORICAL SOURCE GALLERY III */}
       {activeTab === 'tropos' && (
         <div
           id="panel-cs-tropos"
@@ -712,159 +1166,222 @@ export function CulturalStudiesAfricaModule() {
           className="flex flex-col gap-8"
         >
           <div className="flex flex-col gap-6">
-            {/* Medium Filter Strip */}
-            <div className="bg-paper border border-hairline p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
-              <div
-                className="flex flex-wrap items-center gap-1.5"
-                role="group"
-                aria-label="Filtrar tropos por soporte cultural"
-              >
-                {TROPE_MEDIUM_FILTERS.map((flt) => {
-                  const isActive = selectedMedium === flt.id;
-                  return (
-                    <button
-                      key={flt.id}
-                      type="button"
-                      aria-pressed={isActive}
-                      onClick={() => setSelectedMedium(flt.id)}
-                      className={`min-h-[38px] px-3 py-1.5 text-xs font-medium rounded border transition-colors whitespace-nowrap shrink-0 cursor-pointer tabular-nums ${
-                        isActive
-                          ? 'bg-ochre text-white border-ochre'
-                          : 'bg-canvas text-ink-muted border-hairline hover:border-ink hover:text-ink'
-                      }`}
-                    >
-                      {flt.label} ({mediumCounts[flt.id]})
-                    </button>
-                  );
-                })}
-              </div>
-              <span className="font-mono text-xs text-ink-muted tabular-nums">
-                {filteredTropes.length} de {MYSTERIOUS_AFRICA_TROPES.length} tropos visibles
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Trope Selector List */}
-              <div
-                className="lg:col-span-5 flex flex-col border-t border-rule"
-                role="listbox"
-                aria-label="Catálogo de tropos del África misteriosa"
-              >
-                {filteredTropes.map((trope) => {
-                  const isActive = trope.id === activeTrope.id;
-                  const linkedPlate = platesById[trope.visualPlateId];
-                  return (
-                    <button
-                      key={trope.id}
-                      type="button"
-                      role="option"
-                      aria-selected={isActive}
-                      onClick={() => setSelectedTropeId(trope.id)}
-                      className={`text-left px-4 py-3.5 border-b border-hairline transition-colors cursor-pointer flex flex-col gap-1 ${
-                        isActive
-                          ? 'bg-paper text-ink'
-                          : 'bg-canvas text-ink-muted hover:bg-paper/70 hover:text-ink'
-                      }`}
-                    >
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-mono text-xs font-semibold text-ochre tabular-nums">
-                          {trope.num}.
-                        </span>
-                        <span className="font-display text-base font-semibold text-ink leading-snug">
-                          {trope.title}
-                        </span>
-                      </div>
-                      <div className="font-mono text-[11px] text-lapis pl-6 flex flex-wrap items-center gap-x-2">
-                        <span>{trope.mediumLabel}</span>
-                        {linkedPlate && (
-                          <>
-                            <span aria-hidden="true">·</span>
-                            <span className="text-ink-muted tabular-nums">
-                              {linkedPlate.sourceCode}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Selected Trope Deconstruction Sheet */}
-              <article
-                id="cs-trope-sheet"
-                aria-live="polite"
-                className="lg:col-span-7 bg-paper border border-hairline border-t-2 border-t-rule p-6 sm:p-7 flex flex-col gap-5 scroll-mt-24"
-              >
-                <div className="flex flex-col gap-1.5 pb-4 border-b border-hairline">
-                  <div className="font-mono text-xs text-ochre flex flex-wrap items-center gap-x-2">
-                    <span className="tabular-nums">Tropo {activeTrope.num}</span>
-                    <span aria-hidden="true">·</span>
-                    <span>{activeTrope.mediumLabel}</span>
-                  </div>
-                  <h3 className="font-display text-2xl sm:text-3xl font-semibold text-ink leading-tight m-0">
-                    {activeTrope.title}
-                  </h3>
+            {/* Medium Filter & Keyword Search Bar */}
+            <div className="bg-paper border border-hairline p-4 sm:p-5 flex flex-col gap-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div
+                  className="flex flex-wrap items-center gap-1.5"
+                  role="group"
+                  aria-label="Filtrar tropos por soporte cultural"
+                >
+                  {TROPE_MEDIUM_FILTERS.map((flt) => {
+                    const isActive = selectedMedium === flt.id;
+                    return (
+                      <button
+                        key={flt.id}
+                        type="button"
+                        aria-pressed={isActive}
+                        onClick={() => setSelectedMedium(flt.id)}
+                        className={`min-h-[38px] px-3 py-1.5 text-xs font-medium rounded border transition-colors whitespace-nowrap shrink-0 cursor-pointer tabular-nums ${
+                          isActive
+                            ? 'bg-ochre text-white border-ochre'
+                            : 'bg-canvas text-ink-muted border-hairline hover:border-ink hover:text-ink'
+                        }`}
+                      >
+                        {flt.label} ({mediumCounts[flt.id]})
+                      </button>
+                    );
+                  })}
                 </div>
+                <span className="font-mono text-xs text-ink-muted tabular-nums">
+                  {filteredTropes.length} de {MYSTERIOUS_AFRICA_TROPES.length} tropos visibles
+                </span>
+              </div>
 
-                {activeTropePlate && (
-                  <InlineSourceFigure
-                    plate={activeTropePlate}
-                    compareTarget={platesById[activeTropePlate.compareWithId]}
-                    isBroken={Boolean(brokenPlates[activeTropePlate.id])}
-                    onMarkBroken={markPlateBroken}
-                    onOpenSingle={handleOpenPlateLightbox}
-                    onOpenCompare={handleComparePlates}
-                  />
+              <div className="relative max-w-md">
+                <Search
+                  className="w-4 h-4 text-ink-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  aria-hidden="true"
+                />
+                <input
+                  type="search"
+                  value={tropeQuery}
+                  onChange={(e) => setTropeQuery(e.target.value)}
+                  placeholder="Buscar por cliché, autor o caso (Conrad, Kipling, Banania, Benín, safari...)"
+                  aria-label="Buscar dentro de los 12 tropos del África misteriosa"
+                  className="w-full min-h-[40px] pl-9 pr-9 py-2 text-xs bg-canvas border border-hairline text-ink placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ochre"
+                />
+                {tropeQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setTropeQuery('')}
+                    aria-label="Limpiar búsqueda de tropos"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink-muted hover:text-ink cursor-pointer p-1"
+                  >
+                    <X className="w-3.5 h-3.5" aria-hidden="true" />
+                  </button>
                 )}
-
-                <dl className="flex flex-col gap-4 text-sm leading-[1.7] text-ink m-0">
-                  <div className="flex flex-col gap-1">
-                    <dt className="font-mono text-[11px] text-ink-muted">
-                      Genealogía histórica del imaginario
-                    </dt>
-                    <dd className="m-0">{activeTrope.historicalOrigin}</dd>
-                  </div>
-
-                  <div className="pt-3 border-t border-hairline flex flex-col gap-1">
-                    <dt className="font-mono text-[11px] text-ink-muted">
-                      Cómo opera el mecanismo cultural
-                    </dt>
-                    <dd className="m-0">{activeTrope.culturalMechanism}</dd>
-                  </div>
-
-                  <div className="pt-3 border-t border-hairline flex flex-col gap-1">
-                    <dt className="font-mono text-[11px] text-ink-muted">
-                      Ejemplos en la cultura popular y mediática
-                    </dt>
-                    <dd className="m-0">{activeTrope.examples}</dd>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-hairline">
-                    <div className="bg-canvas border border-hairline p-4 flex flex-col gap-1">
-                      <dt className="font-mono text-[11px] font-semibold text-ochre">
-                        Qué invisibiliza o borra
-                      </dt>
-                      <dd className="text-xs sm:text-sm leading-relaxed text-ink m-0">
-                        {activeTrope.whatItErases}
-                      </dd>
-                    </div>
-                    <div className="bg-canvas border border-hairline p-4 flex flex-col gap-1">
-                      <dt className="font-mono text-[11px] font-semibold text-forest">
-                        Contra-archivo y evidencia crítica
-                      </dt>
-                      <dd className="text-xs sm:text-sm leading-relaxed text-ink m-0">
-                        {activeTrope.counterEvidence}
-                      </dd>
-                    </div>
-                  </div>
-                </dl>
-
-                <div className="pt-3 border-t border-hairline font-mono text-[11px] text-ink-muted">
-                  Claves conceptuales: {activeTrope.tags.join(' · ')}
-                </div>
-              </article>
+              </div>
             </div>
+
+            {filteredTropes.length === 0 ? (
+              <div className="bg-paper border border-hairline p-8 text-center flex flex-col items-center gap-3">
+                <p className="text-sm text-ink m-0">
+                  No se encontraron tropos que coincidan con «{tropeQuery}».
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTropeQuery('');
+                    setSelectedMedium('todos');
+                  }}
+                  className="min-h-[38px] px-4 py-1.5 text-xs font-mono bg-ink text-white cursor-pointer"
+                >
+                  Restablecer los 12 tropos
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {/* Trope Selector List */}
+                <div
+                  className="lg:col-span-5 flex flex-col border-t border-rule"
+                  role="listbox"
+                  aria-label="Catálogo de 12 tropos del África misteriosa"
+                >
+                  {filteredTropes.map((trope) => {
+                    const isActive = trope.id === activeTrope.id;
+                    const linkedPlate = platesById[trope.visualPlateId];
+                    return (
+                      <button
+                        key={trope.id}
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => setSelectedTropeId(trope.id)}
+                        className={`text-left px-4 py-3.5 border-b border-hairline transition-colors cursor-pointer flex flex-col gap-1 ${
+                          isActive
+                            ? 'bg-paper text-ink'
+                            : 'bg-canvas text-ink-muted hover:bg-paper/70 hover:text-ink'
+                        }`}
+                      >
+                        <div className="flex items-baseline gap-2">
+                          <span className="font-mono text-xs font-semibold text-ochre tabular-nums">
+                            {trope.num}.
+                          </span>
+                          <span className="font-display text-base font-semibold text-ink leading-snug">
+                            {trope.title}
+                          </span>
+                        </div>
+                        <div className="font-mono text-[11px] text-lapis pl-6 flex flex-wrap items-center gap-x-2">
+                          <span>{trope.mediumLabel}</span>
+                          {linkedPlate && (
+                            <>
+                              <span aria-hidden="true">·</span>
+                              <span className="text-ink-muted tabular-nums">
+                                {linkedPlate.sourceCode}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Selected Trope Deconstruction Sheet */}
+                <article
+                  id="cs-trope-sheet"
+                  aria-live="polite"
+                  className="lg:col-span-7 bg-paper border border-hairline border-t-2 border-t-rule p-6 sm:p-7 flex flex-col gap-5 scroll-mt-24"
+                >
+                  <div className="flex flex-col gap-2 pb-4 border-b border-hairline">
+                    <div className="font-mono text-xs text-ochre flex flex-wrap items-center gap-x-2 tabular-nums">
+                      <span>Tropo {activeTrope.num} / 12</span>
+                      <span aria-hidden="true">·</span>
+                      <span>{activeTrope.mediumLabel}</span>
+                      <span aria-hidden="true">·</span>
+                      <span className="text-ink-muted">{activeTrope.persistenceArc}</span>
+                    </div>
+                    <h3 className="font-display text-2xl sm:text-3xl font-semibold text-ink leading-tight m-0">
+                      {activeTrope.title}
+                    </h3>
+                    <p className="font-display italic text-sm text-ink-muted m-0">
+                      Fórmula cliché habitual: {activeTrope.clicheSignature}
+                    </p>
+                  </div>
+
+                  {activeTropePlate && (
+                    <InlineSourceFigure
+                      plate={activeTropePlate}
+                      compareTarget={platesById[activeTropePlate.compareWithId]}
+                      isBroken={Boolean(brokenPlates[activeTropePlate.id])}
+                      onMarkBroken={markPlateBroken}
+                      onOpenSingle={handleOpenPlateLightbox}
+                      onOpenCompare={handleComparePlates}
+                    />
+                  )}
+
+                  <dl className="flex flex-col gap-4 text-sm leading-[1.7] text-ink m-0">
+                    <div className="flex flex-col gap-1">
+                      <dt className="font-mono text-[11px] text-ink-muted">
+                        Genealogía histórica del imaginario
+                      </dt>
+                      <dd className="m-0">{activeTrope.historicalOrigin}</dd>
+                    </div>
+
+                    <div className="pt-3 border-t border-hairline flex flex-col gap-1">
+                      <dt className="font-mono text-[11px] text-ink-muted">
+                        Cómo opera el mecanismo cultural
+                      </dt>
+                      <dd className="m-0">{activeTrope.culturalMechanism}</dd>
+                    </div>
+
+                    <div className="pt-3 border-t border-hairline flex flex-col gap-1">
+                      <dt className="font-mono text-[11px] text-ink-muted">
+                        Ejemplos en la cultura popular, colonial y mediática
+                      </dt>
+                      <dd className="m-0">{activeTrope.examples}</dd>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-hairline">
+                      <div className="bg-canvas border border-hairline p-4 flex flex-col gap-1">
+                        <dt className="font-mono text-[11px] font-semibold text-ochre">
+                          Qué invisibiliza o borra
+                        </dt>
+                        <dd className="text-xs sm:text-sm leading-relaxed text-ink m-0">
+                          {activeTrope.whatItErases}
+                        </dd>
+                      </div>
+                      <div className="bg-canvas border border-hairline p-4 flex flex-col gap-1">
+                        <dt className="font-mono text-[11px] font-semibold text-forest">
+                          Contra-archivo y evidencia crítica
+                        </dt>
+                        <dd className="text-xs sm:text-sm leading-relaxed text-ink m-0">
+                          {activeTrope.counterEvidence}
+                        </dd>
+                      </div>
+                    </div>
+                  </dl>
+
+                  <div className="pt-3 border-t border-hairline flex flex-wrap items-center justify-between gap-3">
+                    <span className="font-mono text-[11px] text-ink-muted">
+                      Claves conceptuales: {activeTrope.tags.join(' · ')}
+                    </span>
+                    {activeTrope.linkedArtifactId && (
+                      <button
+                        type="button"
+                        onClick={() => handleJumpToArtifact(activeTrope.linkedArtifactId!)}
+                        className="min-h-[36px] px-3 py-1.5 bg-canvas border border-hairline hover:border-lapis text-xs font-mono font-medium text-lapis hover:text-ink transition-colors inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
+                      >
+                        <Eye className="w-3.5 h-3.5" aria-hidden="true" />
+                        <span>Practicar decodificación (Stuart Hall)</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
+                      </button>
+                    )}
+                  </div>
+                </article>
+              </div>
+            )}
           </div>
 
           <HistoricalSourceGallery
@@ -881,7 +1398,7 @@ export function CulturalStudiesAfricaModule() {
         </div>
       )}
 
-      {/* TAB 3: STUART HALL DECODING LAB + HISTORICAL SOURCE GALLERY III */}
+      {/* TAB IV: STUART HALL DECODING LAB + HISTORICAL SOURCE GALLERY IV */}
       {activeTab === 'decodificador' && (
         <div
           id="panel-cs-decodificador"
@@ -894,19 +1411,26 @@ export function CulturalStudiesAfricaModule() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 font-mono text-xs text-lapis">
                   <Eye className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>Modelo de Codificación / Decodificación · Stuart Hall (1973)</span>
+                  <span>
+                    Modelo de{' '}
+                    <GlossaryTermTrigger termId="codificacion-decodificacion" tone="lapis">
+                      Codificación / Decodificación
+                    </GlossaryTermTrigger>{' '}
+                    · Stuart Hall (1973)
+                  </span>
                 </div>
                 <h3 className="font-display text-xl sm:text-2xl font-semibold text-ink m-0">
                   Analizador de piezas culturales sobre el «África misteriosa»
                 </h3>
-                <p className="text-xs sm:text-sm text-ink-muted max-w-[70ch] m-0">
-                  Seleccione un formato mediático habitual y alterne entre las tres posiciones de
-                  lectura propuestas por Stuart Hall para observar cómo el mismo mensaje puede
-                  reproducirse, matizarse o desactivarse críticamente.
+                <p className="text-xs sm:text-sm text-ink-muted max-w-[74ch] m-0">
+                  Seleccione uno de los {DECODING_ARTIFACTS.length} soportes mediáticos (novela
+                  imperial, prensa, publicidad comercial, cómic colonial, folleto turístico,
+                  campaña humanitaria y cine comercial) y alterne entre las tres posiciones de
+                  lectura propuestas por Stuart Hall para observar cómo el mismo mensaje se
+                  reproduce, matiza o desactiva críticamente.
                 </p>
               </div>
 
-              {/* Artifact Selector Buttons */}
               <div
                 className="flex flex-wrap items-center gap-2"
                 role="group"
@@ -920,7 +1444,7 @@ export function CulturalStudiesAfricaModule() {
                       type="button"
                       aria-pressed={isSelected}
                       onClick={() => setSelectedArtifactId(art.id)}
-                      className={`min-h-[38px] px-3.5 py-1.5 text-xs font-medium rounded border transition-colors whitespace-nowrap cursor-pointer ${
+                      className={`min-h-[38px] px-3.5 py-1.5 text-xs font-medium rounded border transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                         isSelected
                           ? 'bg-ink text-white border-ink'
                           : 'bg-canvas text-ink border-hairline hover:border-ink'
@@ -934,7 +1458,6 @@ export function CulturalStudiesAfricaModule() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Left: Artifact Text, Linked Historical Source & Rhetorical Markers */}
               <div
                 id="cs-artifact-sheet"
                 className="lg:col-span-5 bg-paper border border-hairline p-6 flex flex-col gap-5 scroll-mt-24"
@@ -1021,7 +1544,7 @@ export function CulturalStudiesAfricaModule() {
 
                 <div className="flex flex-col gap-3">
                   <span className="font-mono text-[11px] font-semibold text-ink-muted">
-                    Marcas retóricas detectadas (Wainaina / Adichie)
+                    Marcas retóricas detectadas (Wainaina / McClintock / Adichie)
                   </span>
                   <ul className="m-0 p-0 list-none flex flex-col gap-3">
                     {activeArtifact.rhetoricalMarkers.map((marker) => (
@@ -1039,7 +1562,6 @@ export function CulturalStudiesAfricaModule() {
                 </div>
               </div>
 
-              {/* Right: Interactive Hall Reading Switcher */}
               <div className="lg:col-span-7 bg-paper border border-hairline border-t-2 border-t-lapis p-6 flex flex-col gap-5">
                 <div
                   className="grid grid-cols-1 sm:grid-cols-3 gap-2"
@@ -1114,7 +1636,7 @@ export function CulturalStudiesAfricaModule() {
         </div>
       )}
 
-      {/* TAB 4: AFRICAN COUNTER-NARRATIVES + HISTORICAL SOURCE GALLERY IV */}
+      {/* TAB V: AFRICAN COUNTER-NARRATIVES + HISTORICAL SOURCE GALLERY V */}
       {activeTab === 'contranarrativas' && (
         <div
           id="panel-cs-contranarrativas"
@@ -1240,11 +1762,13 @@ export function CulturalStudiesAfricaModule() {
             onSelectFromPlate={handleSelectFromGalleryPlate}
           />
 
-          {/* Curated APA 7 Reading List for Cultural Studies & Africa */}
           <div className="bg-paper border border-hairline border-t-2 border-t-rule p-6 flex flex-col gap-4">
             <div className="flex items-center gap-2 font-mono text-xs text-ochre">
               <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
-              <span>Bibliografía fundamental · Cultural Studies, representación y África (APA 7.ª)</span>
+              <span>
+                Bibliografía fundamental · Cultural Studies, imaginarios coloniales y África (APA
+                7.ª)
+              </span>
             </div>
             <ul className="m-0 pl-5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-xs leading-relaxed text-ink">
               {CULTURAL_STUDIES_BIBLIOGRAPHY.map((ref) => (
@@ -1257,7 +1781,8 @@ export function CulturalStudiesAfricaModule() {
               <Sparkles className="w-3.5 h-3.5 text-lapis shrink-0" aria-hidden="true" />
               <span>
                 Síntesis del Bloque III: historia precolonial (02–04) + crítica documental (05) +
-                iconografía caníbal (05b) + archivo audiovisual (05c) + Cultural Studies (05d).
+                iconografía caníbal (05b) + archivo audiovisual (05c) + Cultural Studies y
+                estereotipos coloniales (05d).
               </span>
             </div>
           </div>

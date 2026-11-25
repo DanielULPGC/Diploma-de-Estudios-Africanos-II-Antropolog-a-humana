@@ -244,6 +244,41 @@ function AppShell() {
     saveReadingPrefs(next);
   }, []);
 
+  const handleEnterSoloReadingMode = useCallback(() => {
+    setReadingMode(true);
+    setReadingPrefs((prev) => {
+      const next: ReadingPrefs = {
+        fontScale: prev.fontScale === 'normal' ? 'large' : prev.fontScale,
+        paperTone: prev.paperTone === 'canvas' ? 'warm' : prev.paperTone,
+        lineSpacing: 'relaxed',
+      };
+      saveReadingPrefs(next);
+      return next;
+    });
+  }, []);
+
+  // Sync font-scale, paper-tone, spacing, and reading-mode onto <html> so all rem units & portals scale globally
+  useEffect(() => {
+    const root = document.documentElement;
+    const managed = [
+      'reading-scale-large',
+      'reading-scale-xlarge',
+      'reading-tone-warm',
+      'reading-tone-contrast',
+      'reading-spacing-relaxed',
+      'reading-mode',
+    ];
+    root.classList.remove(...managed);
+    const activeClasses = getReadingPrefsClassNames(readingPrefs).split(' ').filter(Boolean);
+    if (readingMode) activeClasses.push('reading-mode');
+    if (activeClasses.length > 0) {
+      root.classList.add(...activeClasses);
+    }
+    return () => {
+      root.classList.remove(...managed);
+    };
+  }, [readingPrefs, readingMode]);
+
   const markSectionVisited = useCallback((sectionId: string) => {
     setLastSavedSectionId(sectionId);
     try {
@@ -506,7 +541,7 @@ function AppShell() {
             </a>
 
             <nav
-              className="hidden md:flex items-center gap-6 text-sm font-medium text-ink-muted"
+              className="hidden lg:flex items-center gap-5 text-sm font-medium text-ink-muted"
               aria-label="Navegación por bloques del módulo"
             >
               {TOP_NAV_LINKS.map((link) => {
@@ -572,10 +607,11 @@ function AppShell() {
               )}
               <button
                 type="button"
-                onClick={() => navigateToCourseTarget({ sectionId: 'sec-bibliografia' })}
-                className="min-h-[40px] px-4 py-1.5 text-xs font-semibold text-white bg-ink rounded hover:bg-ochre transition-colors duration-150 whitespace-nowrap shrink-0 cursor-pointer"
+                onClick={handleEnterSoloReadingMode}
+                className="min-h-[40px] px-3.5 py-1.5 text-xs font-semibold text-white bg-ink rounded hover:bg-ochre transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer"
               >
-                Bibliografía
+                <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>Solo lectura</span>
               </button>
             </div>
           </div>
@@ -606,7 +642,7 @@ function AppShell() {
         id="contenido-principal"
         tabIndex={-1}
         className={`${
-          readingMode ? 'max-w-[820px] pt-8 sm:pt-10' : 'max-w-[1200px] pt-10 sm:pt-14'
+          readingMode ? 'max-w-[780px] pt-8 sm:pt-12' : 'max-w-[1200px] pt-10 sm:pt-14'
         } mx-auto px-5 sm:px-8 pb-24 flex flex-col gap-12 transition-[max-width] duration-200 focus:outline-none`}
       >
         {/* Editorial Hero: Balanced 2-Column Split */}
@@ -676,13 +712,47 @@ function AppShell() {
 
                     <button
                       type="button"
-                      onClick={() => setReadingMode(true)}
+                      onClick={handleEnterSoloReadingMode}
                       aria-pressed={readingMode}
-                      className="min-h-[42px] px-3.5 py-2 text-xs font-medium text-ink bg-paper border border-hairline rounded inline-flex items-center gap-2 hover:border-ink hover:bg-surface transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                      className="min-h-[42px] px-3.5 py-2 text-xs font-semibold text-ochre bg-ochre-soft border border-ochre/40 rounded inline-flex items-center gap-2 hover:border-ochre transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                     >
-                      <BookOpen className="w-3.5 h-3.5 text-ochre" aria-hidden="true" />
-                      <span>Modo Lectura</span>
+                      <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                      <span>Modo solo lectura</span>
                     </button>
+
+                    <div
+                      role="group"
+                      aria-label="Cambiar tamaño de letra rápidamente"
+                      className="inline-flex items-center p-0.5 bg-paper border border-hairline rounded"
+                    >
+                      {(
+                        [
+                          { id: 'normal', label: 'A', aria: 'Letra estándar' },
+                          { id: 'large', label: 'A+', aria: 'Letra grande' },
+                          { id: 'xlarge', label: 'A++', aria: 'Letra muy grande' },
+                        ] as const
+                      ).map((opt) => {
+                        const active = readingPrefs.fontScale === opt.id;
+                        return (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            aria-label={opt.aria}
+                            aria-pressed={active}
+                            onClick={() =>
+                              handleChangeReadingPrefs({ ...readingPrefs, fontScale: opt.id })
+                            }
+                            className={`min-h-[38px] min-w-[38px] px-2.5 py-1 font-mono text-xs rounded-xs transition-colors whitespace-nowrap cursor-pointer ${
+                              active
+                                ? 'bg-ink text-white font-semibold'
+                                : 'text-ink-muted hover:text-ink'
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
@@ -1088,7 +1158,7 @@ function AppShell() {
         onSelectChapter={(id) => navigateToCourseTarget({ sectionId: id })}
         onChangeViewMode={handleChangeViewMode}
         onOpenSearch={() => setSearchOpen(true)}
-        onEnableReadingMode={() => setReadingMode(true)}
+        onEnableReadingMode={handleEnterSoloReadingMode}
         onOpenGlossary={() => jumpToGlossary()}
       />
     </div>

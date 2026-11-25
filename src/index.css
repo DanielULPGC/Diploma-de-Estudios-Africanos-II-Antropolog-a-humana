@@ -36,6 +36,7 @@
 @layer base {
   html {
     scroll-behavior: auto;
+    font-size: 17px;
     background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -43,10 +44,19 @@
     overflow-x: clip;
   }
 
+  html.reading-scale-large {
+    font-size: 18.5px;
+  }
+
+  html.reading-scale-xlarge {
+    font-size: 20.5px;
+  }
+
   body {
     margin: 0;
     background-color: var(--color-canvas);
     color: var(--color-ink);
+    line-height: 1.65;
     overflow-x: clip;
   }
 
@@ -200,8 +210,8 @@
   --color-surface-high: #e1d7c4;
   --color-hairline: #ddd3bf;
   --color-ink: #1a1815;
-  --color-ink-muted: #49443b;
-  --color-ink-subtle: #595348;
+  --color-ink-muted: #433e36;
+  --color-ink-subtle: #544e44;
   --color-ochre-soft: #f6e7dc;
   --color-lapis-soft: #e6eef7;
   --color-forest-soft: #e5f1ec;
@@ -220,10 +230,10 @@
   --color-paper: #f4f4f2;
   --color-surface: #eaeae6;
   --color-surface-high: #dcdcd6;
-  --color-hairline: #b4b4ac;
+  --color-hairline: #a8a8a0;
   --color-ink: #050505;
-  --color-ink-muted: #222220;
-  --color-ink-subtle: #383834;
+  --color-ink-muted: #1f1f1d;
+  --color-ink-subtle: #333330;
   --map-ocean: #f5f8fb;
   --map-ocean-stroke: #40403c;
   --map-graticule: #b8c2cc;
@@ -234,47 +244,72 @@
   --map-africa-label: #121212;
 }
 
-/* Suelo tipográfico y escala de lectura adaptable (preserva lienzos 3D y docks) */
+/* Suelo tipográfico global: impide cuerpos demasiado pequeños en lectura académica */
+main p:not([data-keep-compact="true"]),
+main dd:not([data-keep-compact="true"]),
+main blockquote {
+  font-size: max(0.96rem, 1em);
+  line-height: 1.74;
+}
+
+main li:not([data-keep-compact="true"]),
+main td:not([data-keep-compact="true"]) {
+  font-size: max(0.92rem, 1em);
+  line-height: 1.66;
+}
+
+main figcaption p:not([data-keep-compact="true"]) {
+  font-size: max(0.88rem, 1em);
+  line-height: 1.65;
+}
+
 .reading-scale-large main p:not([data-keep-compact="true"]),
 .reading-scale-large main dd:not([data-keep-compact="true"]),
 .reading-scale-large main blockquote {
-  font-size: max(1rem, 1.08em);
-  line-height: 1.72;
+  font-size: max(1rem, 1.04em);
+  line-height: 1.78;
 }
 
-.reading-scale-large main li:not([data-keep-compact="true"]) {
-  font-size: max(0.95rem, 1.05em);
+.reading-scale-large main li:not([data-keep-compact="true"]),
+.reading-scale-large main td:not([data-keep-compact="true"]) {
+  font-size: max(0.95rem, 1.02em);
+  line-height: 1.7;
 }
 
 .reading-scale-xlarge main p:not([data-keep-compact="true"]),
 .reading-scale-xlarge main dd:not([data-keep-compact="true"]),
 .reading-scale-xlarge main blockquote {
-  font-size: max(1.125rem, 1.18em);
-  line-height: 1.8;
+  font-size: max(1.06rem, 1.08em);
+  line-height: 1.84;
 }
 
-.reading-scale-xlarge main li:not([data-keep-compact="true"]) {
-  font-size: max(1.05rem, 1.12em);
+.reading-scale-xlarge main li:not([data-keep-compact="true"]),
+.reading-scale-xlarge main td:not([data-keep-compact="true"]) {
+  font-size: max(1rem, 1.05em);
+  line-height: 1.75;
 }
 
 /* Interlineado amplio y separación entre párrafos */
 .reading-spacing-relaxed main p:not([data-keep-compact="true"]),
 .reading-spacing-relaxed main dd:not([data-keep-compact="true"]),
 .reading-spacing-relaxed main li:not([data-keep-compact="true"]) {
-  line-height: 1.85;
+  line-height: 1.86;
   letter-spacing: 0.008em;
 }
 
 .reading-spacing-relaxed main p + p {
-  margin-top: 0.85rem;
+  margin-top: 0.9rem;
 }
 
-/* Modo Lectura: despeja paneles secundarios y optimiza medida y ritmo sin romper docks 3D */
+/* Modo solo lectura: despeja paneles auxiliares, centra una columna serena de lectura y prioriza el texto */
 .reading-mode .reading-mode-hide {
   display: none !important;
 }
 
-.reading-mode .lg\:grid-cols-12:not([data-preserve-grid="true"]) {
+.reading-mode .lg\:grid-cols-12:not([data-preserve-grid="true"]),
+.reading-mode .xl\:grid-cols-4:not([data-preserve-grid="true"]),
+.reading-mode .md\:grid-cols-3:not([data-preserve-grid="true"]),
+.reading-mode .md\:grid-cols-2:not([data-preserve-grid="true"]) {
   grid-template-columns: minmax(0, 1fr) !important;
 }
 
@@ -290,14 +325,27 @@
   position: static !important;
 }
 
-.reading-mode main p:not([data-keep-compact="true"]) {
-  max-width: 68ch;
-  font-size: max(1rem, 1em);
-  line-height: 1.75;
+.reading-mode main input[type="search"] {
+  display: none !important;
 }
 
-.reading-mode.reading-scale-xlarge main p:not([data-keep-compact="true"]) {
-  font-size: max(1.125rem, 1.15em);
+.reading-mode main p:not([data-keep-compact="true"]),
+.reading-mode main dd:not([data-keep-compact="true"]),
+.reading-mode main blockquote {
+  max-width: 66ch;
+  font-size: max(1.04rem, 1.05em);
+  line-height: 1.86;
+}
+
+.reading-mode.reading-scale-xlarge main p:not([data-keep-compact="true"]),
+.reading-mode.reading-scale-xlarge main dd:not([data-keep-compact="true"]),
+.reading-mode.reading-scale-xlarge main blockquote {
+  font-size: max(1.12rem, 1.1em);
+  line-height: 1.9;
+}
+
+.reading-mode main li:not([data-keep-compact="true"]) {
+  max-width: 66ch;
   line-height: 1.82;
 }
 
