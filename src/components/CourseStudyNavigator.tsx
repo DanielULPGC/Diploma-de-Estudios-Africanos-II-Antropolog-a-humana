@@ -88,6 +88,7 @@ export function CourseStudyNavigator({
     if (!isActive) return 'border-t-hairline';
     if (accent === 'lapis') return 'border-t-lapis';
     if (accent === 'forest') return 'border-t-forest';
+    if (accent === 'plum') return 'border-t-plum';
     if (accent === 'ink') return 'border-t-ink';
     return 'border-t-ochre';
   };
@@ -95,6 +96,7 @@ export function CourseStudyNavigator({
   const getBlockRomanTone = (accent: (typeof COURSE_BLOCKS)[number]['accent']) => {
     if (accent === 'lapis') return 'text-lapis';
     if (accent === 'forest') return 'text-forest';
+    if (accent === 'plum') return 'text-plum';
     if (accent === 'ink') return 'text-ink';
     return 'text-ochre';
   };
@@ -102,14 +104,14 @@ export function CourseStudyNavigator({
   return (
     <section
       aria-label="Mapa didáctico del Módulo I y accesos directos"
-      className="flex flex-col gap-6 pb-8 border-b border-rule hide-when-printing-seminar reading-mode-hide no-print"
+      className="flex flex-col gap-6 pb-8 border-b border-rule reading-mode-hide no-print"
     >
       {/* Top Study Control Bar: View Mode + Search + Active Location + Share */}
       <div className="bg-paper border border-hairline p-4 flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-col gap-0.5">
             <span className="font-mono text-[11px] text-ochre font-medium">
-              Ruta de estudio · Módulo I (4 bloques · {COURSE_CHAPTERS.length} apartados)
+              Ruta de estudio · Módulo I ({COURSE_BLOCKS.length} bloques · {COURSE_CHAPTERS.length} apartados)
             </span>
             <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-ink-muted">
               <span>
@@ -158,7 +160,7 @@ export function CourseStudyNavigator({
                 }`}
               >
                 <Columns2 className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>Por bloque (I–IV)</span>
+                <span>Por bloque (I–V)</span>
               </button>
             </div>
 
@@ -198,8 +200,8 @@ export function CourseStudyNavigator({
         {/* Inline Reading Comfort Preferences (Font Size, Warm Paper, Spacing) */}
         <ReadingPrefsInlineStrip prefs={readingPrefs} onChange={onChangeReadingPrefs} />
 
-        {/* 4 Academic Block Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 5 Academic Block Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
           {COURSE_BLOCKS.map((blk) => {
             const isBlockActive = blk.id === activeBlockId;
             const chapters = blk.chapterIds.map((id) => getChapterMeta(id));

@@ -325,7 +325,8 @@ main figcaption p:not([data-keep-compact="true"]) {
   position: static !important;
 }
 
-.reading-mode main input[type="search"] {
+.reading-mode main div:has(> input[type="search"]),
+.reading-mode main form:has(input[type="search"]) {
   display: none !important;
 }
 
@@ -352,14 +353,5 @@ main figcaption p:not([data-keep-compact="true"]) {
 @media print {
   .no-print {
     display: none !important;
-  }
-  body.printing-seminar .hide-when-printing-seminar {
-    display: none !important;
-  }
-  body.printing-seminar .seminar-print-sheet {
-    display: block !important;
-    border: 1px solid #121212 !important;
-    padding: 24px !important;
-    background: #ffffff !important;
   }
 }

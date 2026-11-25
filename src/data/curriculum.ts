@@ -1275,4 +1275,92 @@ export const BIBLIOGRAPHY_ENTRIES: BibliographyCategory[] = [
       },
     ],
   },
+  {
+    category: 'Cultural Studies, crítica poscolonial y antropología visual africana (05c–05d)',
+    items: [
+      {
+        citation:
+          'Achebe, C. (1977). An Image of Africa: Racism in Conrad’s Heart of Darkness. The Massachusetts Review, 18(4), 782–794.',
+      },
+      {
+        citation:
+          'Adichie, C. N. (2009). The Danger of a Single Story [Conferencia]. TEDGlobal.',
+      },
+      {
+        citation:
+          'Alloula, M. (1986). The Colonial Harem. Minneapolis: University of Minnesota Press.',
+      },
+      {
+        citation:
+          'Bhabha, H. K. (1994). The Location of Culture. Londres: Routledge.',
+      },
+      {
+        citation:
+          'Blanchard, P., Bancel, N., Boëtsch, G., Deroo, É., Lemaire, S., y Forsdick, C. (Eds.). (2008). Human Zoos: Science and Spectacle in the Age of Colonial Empires. Liverpool: Liverpool University Press.',
+      },
+      {
+        citation:
+          'Césaire, A. (1950). Discours sur le colonialisme. París: Éditions Réclame / Présence Africaine.',
+      },
+      {
+        citation:
+          'Fabian, J. (1983). Time and the Other: How Anthropology Makes Its Object. Nueva York: Columbia University Press.',
+      },
+      {
+        citation:
+          'Hall, S. (1980). Encoding/Decoding. En S. Hall, D. Hobson, A. Lowe y P. Willis (Eds.), Culture, Media, Language (pp. 128–138). Londres: Hutchinson / CCCS.',
+      },
+      {
+        citation:
+          'Hall, S. (Ed.). (1997). Representation: Cultural Representations and Signifying Practices (cap. «The Spectacle of the Other»). Londres: Sage / The Open University.',
+      },
+      {
+        citation:
+          'JanMohamed, A. R. (1985). The Economy of Manichean Allegory: The Function of Racial Difference in Colonialist Literature. Critical Inquiry, 12(1), 59–87.',
+        doi: '10.1086/448321',
+      },
+      {
+        citation:
+          'Mbembe, A. (2001). On the Postcolony. Berkeley: University of California Press.',
+      },
+      {
+        citation:
+          'McClintock, A. (1995). Imperial Leather: Race, Gender and Sexuality in the Colonial Contest. Nueva York / Londres: Routledge.',
+      },
+      {
+        citation:
+          'Mudimbe, V.-Y. (1988). The Invention of Africa: Gnosis, Philosophy, and the Order of Knowledge. Bloomington: Indiana University Press.',
+      },
+      {
+        citation:
+          'Pratt, M. L. (1992). Imperial Eyes: Travel Writing and Transculturation. Londres: Routledge.',
+      },
+      {
+        citation:
+          'Price, S. (1989). Primitive Art in Civilized Places. Chicago: University of Chicago Press.',
+      },
+      {
+        citation:
+          'Rouch, J. (2003). Ciné-Ethnography (S. Feld, Ed. y Trad.). Minneapolis: University of Minnesota Press.',
+      },
+      {
+        citation:
+          'Said, E. W. (1993). Culture and Imperialism. Nueva York: Vintage Books.',
+      },
+      {
+        citation:
+          'Sarr, F., y Savoy, B. (2018). Rapport sur la restitution du patrimoine culturel africain: Vers une nouvelle éthique relationnelle. París: Ministère de la Culture.',
+      },
+      {
+        citation:
+          'Wainaina, B. (2005). How to Write About Africa. Granta, 92, 91–95.',
+      },
+      {
+        citation:
+          'AntropologiaVisual.net. (2005–presente). Archivo de cine y audiovisual etnográfico: Fondo África.',
+        url: 'https://antropologiavisual.net/archivo/africa/',
+        urlLabel: 'antropologiavisual.net/archivo/africa/',
+      },
+    ],
+  },
 ];

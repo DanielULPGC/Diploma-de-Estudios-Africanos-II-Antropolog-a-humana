@@ -107,7 +107,7 @@ export function GlossaryDrawer() {
   return (
     <section
       id="sec-glosario"
-      className="pt-10 border-t border-hairline scroll-mt-20 hide-when-printing-seminar no-print"
+      className="pt-10 border-t border-hairline scroll-mt-20 no-print"
       aria-label="Glosario técnico desplegable de paleoantropología, paleobotánica y etología"
     >
       <div className="bg-paper border-t-2 border-t-rule border-b border-b-hairline">

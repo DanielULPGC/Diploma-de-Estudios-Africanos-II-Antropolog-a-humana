@@ -35,7 +35,6 @@ import { GlossaryProvider, GlossaryTermTrigger, useGlossary } from './components
 import { LightboxProvider } from './components/LightboxContext';
 import { ChapterIndexNav } from './components/ChapterIndexNav';
 import { CourseStudyNavigator } from './components/CourseStudyNavigator';
-import { CourseCommandPalette } from './components/CourseCommandPalette';
 import {
   ReadingModeToolbar,
   getReadingPrefsClassNames,
@@ -47,6 +46,9 @@ import type { HenkeTaskSpec } from './data/ethologyData';
 import { ETHOLOGY_TASK_3D_LAYOUTS } from './data/visualSchemas3dData';
 import { cancelPendingScroll, scheduleInstantScrollToElement } from './utils/scrollPosition';
 
+const LazyCourseCommandPalette = lazy(() =>
+  import('./components/CourseCommandPalette').then((m) => ({ default: m.CourseCommandPalette }))
+);
 const LazyLithicWebXRExperience = lazy(() => import('./components/LithicWebXRExperience'));
 const LazyAtlasPaleoModule = lazy(() =>
   import('./components/AtlasPaleoModule').then((m) => ({ default: m.AtlasPaleoModule }))
@@ -103,7 +105,8 @@ const TOP_NAV_LINKS: Array<{ id: string; blockId?: CourseBlockId; label: string 
   { id: 'sec-origenes', blockId: 'bloque-1', label: 'Evolución' },
   { id: 'sec-atlas-paleobotanica', blockId: 'bloque-2', label: 'Ciencias' },
   { id: 'sec-tecnologia', blockId: 'bloque-3', label: 'Sociedades' },
-  { id: 'sec-bibliografia', blockId: 'bloque-4', label: 'Bibliografía' },
+  { id: 'sec-estereotipos-canibalismo', blockId: 'bloque-4', label: 'Imaginarios' },
+  { id: 'sec-bibliografia', blockId: 'bloque-5', label: 'Bibliografía' },
   { id: 'sec-glosario', label: 'Glosario' },
 ];
 
@@ -124,20 +127,22 @@ function BlockHeaderBand({
       ? 'text-lapis'
       : block.accent === 'forest'
         ? 'text-forest'
-        : block.accent === 'ink'
-          ? 'text-ink'
-          : 'text-ochre';
+        : block.accent === 'plum'
+          ? 'text-plum'
+          : block.accent === 'ink'
+            ? 'text-ink'
+            : 'text-ochre';
 
   return (
     <div
       id={`cabecera-${block.id}`}
       tabIndex={-1}
-      className="pt-4 pb-3 border-b-2 border-rule flex flex-col gap-3 scroll-mt-20 hide-when-printing-seminar focus:outline-none"
+      className="pt-4 pb-4 border-b-2 border-rule flex flex-col gap-3 scroll-mt-20 focus:outline-none"
     >
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="flex flex-col gap-1">
           <span className={`font-mono text-xs font-semibold tracking-wide ${accentText}`}>
-            Bloque {block.roman} de IV · {block.shortTitle}
+            Bloque {block.roman} de V · {block.shortTitle}
           </span>
           <h2 className="font-display text-xl sm:text-2xl font-semibold text-ink tracking-tight m-0">
             {block.title}
@@ -150,10 +155,23 @@ function BlockHeaderBand({
             className="min-h-[40px] px-3.5 py-1.5 font-mono text-xs text-ink-muted hover:text-ink bg-paper border border-hairline hover:border-ink rounded inline-flex items-center gap-1.5 transition-colors whitespace-nowrap cursor-pointer no-print"
           >
             <Layers className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Ver los 4 bloques juntos</span>
+            <span>Ver los 5 bloques juntos</span>
           </button>
         )}
       </div>
+
+      {block.learningOutcomes.length > 0 && (
+        <div className="bg-paper border border-hairline px-4 py-3 flex flex-col gap-1.5">
+          <span className={`font-mono text-[11px] font-semibold tracking-wide ${accentText}`}>
+            Resultados de aprendizaje del Bloque {block.roman}
+          </span>
+          <ul className="m-0 pl-4 flex flex-col gap-1 text-xs sm:text-sm text-ink-muted leading-relaxed">
+            {block.learningOutcomes.map((outcome) => (
+              <li key={outcome}>{outcome}</li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {showBlockSwitch && (
         <div
@@ -182,6 +200,40 @@ function BlockHeaderBand({
         </div>
       )}
     </div>
+  );
+}
+
+function BlockReflectionFooter({ blockId }: { blockId: CourseBlockId }) {
+  const block = getBlockMeta(blockId);
+  if (!block.reflectionPrompts || block.reflectionPrompts.length === 0) return null;
+  const accentText =
+    block.accent === 'lapis'
+      ? 'text-lapis'
+      : block.accent === 'forest'
+        ? 'text-forest'
+        : block.accent === 'plum'
+          ? 'text-plum'
+          : 'text-ochre';
+
+  return (
+    <aside
+      aria-label={`Preguntas guía de reflexión del Bloque ${block.roman}`}
+      className="bg-paper border-t-2 border-t-rule border-x border-b border-hairline px-5 py-4 flex flex-col gap-2.5"
+    >
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <span className={`font-mono text-xs font-semibold ${accentText}`}>
+          Cierre formativo · Bloque {block.roman} ({block.shortTitle})
+        </span>
+        <span className="font-mono text-[11px] text-ink-muted">
+          Pautas de reflexión crítica para estudio autónomo
+        </span>
+      </div>
+      <ol className="m-0 pl-5 flex flex-col gap-1.5 text-sm text-ink leading-relaxed">
+        {block.reflectionPrompts.map((prompt) => (
+          <li key={prompt}>{prompt}</li>
+        ))}
+      </ol>
+    </aside>
   );
 }
 
@@ -646,7 +698,7 @@ function AppShell() {
         } mx-auto px-5 sm:px-8 pb-24 flex flex-col gap-12 transition-[max-width] duration-200 focus:outline-none`}
       >
         {/* Editorial Hero: Balanced 2-Column Split */}
-        <section className="pb-10 border-b border-rule hide-when-printing-seminar">
+        <section className="pb-10 border-b border-rule">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
             <div className="lg:col-span-7 flex flex-col justify-between gap-6">
               <div className="flex flex-col gap-4">
@@ -659,19 +711,21 @@ function AppShell() {
                 </h1>
                 <p className="font-display italic text-lg sm:text-xl leading-relaxed text-ink-muted max-w-[58ch]">
                   Un recorrido interactivo por 300.000 años de profundidad histórica africana: desde
-                  el origen panafricano de nuestra especie y el corpus completo del Atlas de
-                  Paleoantropología hasta los imperios del Sahel, la meseta de Zimbabue y las redes
-                  globales del Sáhara y el océano Índico.
+                  el origen panafricano, el Atlas de Paleoantropología y los grandes reinos e
+                  intercambios del Sáhara y el Índico hasta la antropología visual africana y la
+                  crítica cultural del «África misteriosa» y los estereotipos coloniales.
                 </p>
               </div>
 
               <div className="flex flex-col gap-4 pt-4 border-t border-hairline">
                 <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-xs text-ink-muted">
-                  <span>4 bloques temáticos · {COURSE_CHAPTERS.length} módulos</span>
+                  <span>{COURSE_BLOCKS.length} bloques temáticos · {COURSE_CHAPTERS.length} apartados</span>
                   <span aria-hidden="true">·</span>
                   <span>Atlas de Paleoantropología (ULPGC)</span>
                   <span aria-hidden="true">·</span>
-                  <span className="tabular-nums">Tiempo estimado: 45–60 min</span>
+                  <span className="tabular-nums">
+                    Tiempo estimado: ~2 h de lectura guiada (ampliable con laboratorios)
+                  </span>
                 </div>
 
                 {!readingMode && (
@@ -782,7 +836,7 @@ function AppShell() {
         {showBlock('bloque-1') && (
           <section
             aria-label="Magnitudes históricas clave"
-            className="flex flex-col gap-8 hide-when-printing-seminar"
+            className="flex flex-col gap-8"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {KEY_STATS.map((st) => {
@@ -855,7 +909,7 @@ function AppShell() {
 
         {/* BLOQUE I: Evolución humana y paleoantropología */}
         {showBlock('bloque-1') && (
-          <div className="flex flex-col gap-12 hide-when-printing-seminar">
+          <div className="flex flex-col gap-12">
             <BlockHeaderBand
               blockId="bloque-1"
               showBlockSwitch={studyViewMode === 'bloque'}
@@ -881,12 +935,13 @@ function AppShell() {
                 <LazyAtlasPaleoModule />
               </Suspense>
             </div>
+            <BlockReflectionFooter blockId="bloque-1" />
           </div>
         )}
 
         {/* BLOQUE II: Ecología, evidencia molecular y conducta */}
         {showBlock('bloque-2') && (
-          <div className="flex flex-col gap-12 hide-when-printing-seminar">
+          <div className="flex flex-col gap-12">
             <BlockHeaderBand
               blockId="bloque-2"
               showBlockSwitch={studyViewMode === 'bloque'}
@@ -944,12 +999,13 @@ function AppShell() {
                 <LazyEthologyModule />
               </Suspense>
             </div>
+            <BlockReflectionFooter blockId="bloque-2" />
           </div>
         )}
 
-        {/* BLOQUE III: Tecnología, reinos y redes africanas */}
+        {/* BLOQUE III: Tecnología, reinos precoloniales e historiografía */}
         {showBlock('bloque-3') && (
-          <div className="flex flex-col gap-12 hide-when-printing-seminar">
+          <div className="flex flex-col gap-12">
             <BlockHeaderBand
               blockId="bloque-3"
               showBlockSwitch={studyViewMode === 'bloque'}
@@ -960,6 +1016,19 @@ function AppShell() {
             <KingdomsModule />
             <TradeSimulatorModule />
             <HistoriographyModule />
+            <BlockReflectionFooter blockId="bloque-3" />
+          </div>
+        )}
+
+        {/* BLOQUE IV: Estereotipos coloniales, antropología visual y Cultural Studies */}
+        {showBlock('bloque-4') && (
+          <div className="flex flex-col gap-12">
+            <BlockHeaderBand
+              blockId="bloque-4"
+              showBlockSwitch={studyViewMode === 'bloque'}
+              onSelectBlock={handleSelectBlock}
+              onSwitchToFull={() => handleChangeViewMode('completo')}
+            />
             <div
               id="sec-estereotipos-canibalismo"
               tabIndex={-1}
@@ -1011,23 +1080,22 @@ function AppShell() {
                 <LazyCulturalStudiesAfricaModule />
               </Suspense>
             </div>
+            <BlockReflectionFooter blockId="bloque-4" />
           </div>
         )}
 
-        {/* BLOQUE IV: Bibliografía y referencia */}
-        {showBlock('bloque-4') && (
+        {/* BLOQUE V: Bibliografía y referencia */}
+        {showBlock('bloque-5') && (
           <div className="flex flex-col gap-12">
             <BlockHeaderBand
-              blockId="bloque-4"
+              blockId="bloque-5"
               showBlockSwitch={studyViewMode === 'bloque'}
               onSelectBlock={handleSelectBlock}
               onSwitchToFull={() => handleChangeViewMode('completo')}
             />
 
             {/* Módulo 06: Bibliografía y repositorios */}
-            <div className="hide-when-printing-seminar">
-              <QuizAndBibliography />
-            </div>
+            <QuizAndBibliography />
 
             {/* Glosario técnico desplegable */}
             <GlossaryDrawer />
@@ -1038,7 +1106,7 @@ function AppShell() {
         {studyViewMode === 'bloque' && (
           <nav
             aria-label="Avance secuencial entre bloques temáticos"
-            className="pt-8 border-t-2 border-rule flex flex-wrap items-center justify-between gap-4 hide-when-printing-seminar no-print"
+            className="pt-8 border-t-2 border-rule flex flex-wrap items-center justify-between gap-4 no-print"
           >
             {prevBlock ? (
               <button
@@ -1108,12 +1176,16 @@ function AppShell() {
         </div>
       </footer>
 
-      {/* Global Quick Search & Jump Command Palette (Ctrl+K) */}
-      <CourseCommandPalette
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        onNavigate={navigateToCourseTarget}
-      />
+      {/* Global Quick Search & Jump Command Palette (Ctrl+K, lazy-loaded on demand) */}
+      {searchOpen && (
+        <Suspense fallback={null}>
+          <LazyCourseCommandPalette
+            isOpen={searchOpen}
+            onClose={() => setSearchOpen(false)}
+            onNavigate={navigateToCourseTarget}
+          />
+        </Suspense>
+      )}
 
       {/* Return-to-Reading-Point Floating Bar after jumping to Glossary */}
       {returnOrigin && (

@@ -111,10 +111,10 @@ function HistoricalSourceGallery({
       aria-label={`${meta.kicker}: ${meta.title}`}
       className="pt-6 border-t border-rule flex flex-col gap-5"
     >
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <span className="font-mono text-xs text-ochre tabular-nums">
-            {meta.kicker} · {plates.length} fuentes documentales
+            {meta.kicker} · {plates.length} láminas didácticas de referencia histórica
           </span>
           <span className="font-mono text-[11px] text-ink-muted">
             Pulse una lámina para ampliar o utilice «Contrastar» para comparar con su contra-fuente
@@ -125,6 +125,16 @@ function HistoricalSourceGallery({
         </h3>
         <p className="text-xs sm:text-sm leading-relaxed text-ink-muted max-w-[78ch] m-0">
           {meta.intro}
+        </p>
+        <p className="text-xs leading-relaxed text-ink-muted bg-paper border border-hairline px-3.5 py-2.5 max-w-[82ch] m-0">
+          <strong className="font-mono text-ink font-medium">Nota metodológica de fuentes:</strong>{' '}
+          las láminas de esta galería son{' '}
+          <strong className="font-medium text-ink">
+            reconstrucciones visuales didácticas de corte histórico
+          </strong>{' '}
+          elaboradas para ilustrar tipologías documentales y dispositivos de representación en el
+          aula; no sustituyen a facsímiles primarios de archivo museístico (como los grabados
+          históricos originales consultables en el apartado 05b).
         </p>
       </div>
 
@@ -266,7 +276,7 @@ function InlineSourceFigure({
   onMarkBroken,
   onOpenSingle,
   onOpenCompare,
-  labelPrefix = 'Fuente histórica asociada',
+  labelPrefix = 'Lámina didáctica de referencia histórica',
 }: InlineSourceFigureProps) {
   return (
     <figure className="m-0 bg-canvas border border-hairline grid grid-cols-1 sm:grid-cols-12 overflow-hidden">

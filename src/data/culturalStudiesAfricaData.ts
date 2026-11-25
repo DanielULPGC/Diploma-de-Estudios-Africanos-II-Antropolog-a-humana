@@ -223,7 +223,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Reconstrucción documental de gabinete geográfico europeo (siglo XIX) a partir de fondos de sociedades geográficas y relatos coloniales.',
     analyticalFocus:
       'Permite visualizar la tesis de Mudimbe (1988) y Said (1993): el «África misteriosa» se construyó primero en bibliotecas, mapas y libros de viajes europeos antes que en el terreno.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado I)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado I)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_biblioteca_colonial_1795521357533.jpg'),
     alt: 'Mesa de estudio decimonónica con volúmenes antiguos encuadernados en piel, globo terráqueo de latón, lupa, mapas plegados y láminas grabadas de botánica y paisajes africanos.',
     compareWithId: 'manuscritos-tombuctu',
@@ -246,7 +246,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Tipología de archivo fotográfico y museográfico de época colonial (fines del s. XIX – primer tercio del s. XX).',
     analyticalFocus:
       'Ilustra «The Spectacle of the Other» (Stuart Hall, 1997): la cámara y la vitrina no solo registran, sino que producen diferencia y jerarquía simbólica.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado I)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado I)',
     src: resolveAssetUrl('src/assets/images/cs_archivo_colonial_museo_1795520993284.jpg'),
     alt: 'Mesa de estudio de archivo histórico con cámara de latón del siglo XIX, bandeja de madera con placas fotográficas sepia de linterna mágica, libro de registro museográfico y lupa.',
     compareWithId: 'estudio-bamako-cine',
@@ -269,7 +269,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Evocación documental del trabajo de seminario en el Centre for Contemporary Cultural Studies (Birmingham, años 70) y la crítica mediática africana posterior.',
     analyticalFocus:
       'Muestra el paso de consumir pasivamente titulares e imágenes sobre África a auditar sus encuadres, silencios y clichés (Hall, Wainaina, Adichie).',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado I)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado I)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_birmingham_prensa_1795521357119.jpg'),
     alt: 'Fotografía documental en blanco y negro de una mesa de seminario universitario de los años setenta con hojas de contacto, recortes de prensa anotados en rojo, lupa cuentahílos y libros de Cultural Studies.',
     compareWithId: 'prensa-ilustrada-1884',
@@ -294,7 +294,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Tipología documental de los boletines y atlas de la Royal Geographical Society y la Société de Géographie de París (1850–1878).',
     analyticalFocus:
       'Evidencia cómo el rótulo «inexplorado» transformó territorios densamente poblados y articulados comercialmente en lienzos disponibles para el «descubrimiento» y la anexión imperial.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado II)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado II)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_tratado_geografia_1850_1795626053307.jpg'),
     alt: 'Folio geográfico del siglo XIX abierto sobre mesa de lino mostrando un mapa grabado de la cuenca del Congo con zonas en blanco rotuladas como regiones inexploradas, acompañado de un compás de latón, brújula y cuaderno de campo manuscrito.',
     compareWithId: 'manuscritos-tombuctu',
@@ -317,7 +317,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Tipología de álbumes de tarjetas postales coloniales francesas y británicas (1900–1914), estudiadas por Malek Alloula y Nicolas Bancel.',
     analyticalFocus:
       'Millones de tarjetas postales convirtieron ciudades portuarias y sociedades africanas en «souvenirs» intercambiables que reforzaban en los hogares europeos la estética de la posesión imperial.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado II)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado II)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_postales_africa_1905_1795626075869.jpg'),
     alt: 'Álbum histórico de tarjetas postales coloniales abierto sobre escritorio de nogal con vistas en sepia de Gorée, Argel, Casablanca, Stone Town, Mombasa y Tombuctú, matasellos de época, guantes blancos de archivo y lupa de latón.',
     compareWithId: 'estudio-bamako-cine',
@@ -337,10 +337,10 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
     caption:
       'Latas comerciales litografiadas («Gold Coast Cocoa», «Liberian Palm Oil»), manifiestos marítimos de carga y cromolitografías botánicas: la estética imperial integrada en la despensa europea.',
     provenanceNote:
-      'Efímera comercial y marítima del comercio colonial de entreguerras (África Occidental – puertos británicos y continentales, c. 1920).',
+      'Reconstrucción visual didáctica inspirada en la efímera comercial y marítima del comercio colonial de entreguerras (África Occidental – puertos británicos y continentales, c. 1920).',
     analyticalFocus:
       'Ilustra el concepto de «racismo de mercancía» (Anne McClintock, 1995): el imperio dejó de ser solo política exterior para entrar en cocinas y comercios mediante envases, cromos y marcas exóticas.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado II)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado II)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_publicidad_colonial_1920_1795626055189.jpg'),
     alt: 'Conjunto museográfico sobre travertino con latas antiguas litografiadas de cacao de Costa de Oro y aceite de palma, láminas botánicas de cacao y café, manifiesto naviero de 1920 y caja marcada Accra a Liverpool.',
     compareWithId: 'arquitectura-afrofuturismo',
@@ -360,10 +360,10 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
     caption:
       'Vasija ceremonial y relieve de bronce fundido a la cera perdida junto a fichas catalográficas, calibres y expedientes de procedencia: la revisión crítica de colecciones formadas durante el saqueo colonial.',
     provenanceNote:
-      'Escena de investigación de procedencia museográfica contemporánea en el marco del informe Sarr–Savoy (2018) y las restituciones de bronces de Benín.',
+      'Reconstrucción visual didáctica de una mesa de investigación de procedencia museográfica contemporánea en el marco del informe Sarr–Savoy (2018) y las restituciones de bronces de Benín.',
     analyticalFocus:
       'Confronta la categoría colonial de «arte primitivo anónimo» con la historia real de las cortes reales africanas y el debate jurídico y ético actual sobre la devolución del patrimonio.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado II)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado II)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_restitucion_bronce_2018_1795626056907.jpg'),
     alt: 'Mesa de laboratorio de conservación museográfica con una vasija ceremonial y placa en relieve de bronce patinado de África Occidental sobre soportes de espuma neutra, calibres de latón, fichas de inventario y carpetas de procedencia.',
     compareWithId: 'exposicion-colonial-1900',
@@ -388,7 +388,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Contrapunto visual entre la tradición cartográfica europea posterior a Stanley (1878) y los saberes geográficos sahelianos e índicos.',
     analyticalFocus:
       'Demuestra que la «oscuridad» del mito de Stanley y Conrad no estaba en África, sino en los límites del archivo europeo del siglo XIX.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado III)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado III)',
     src: resolveAssetUrl('src/assets/images/cs_continente_oscuro_mapa_1795520994428.jpg'),
     alt: 'Composición histórica que contrasta un mapa en pergamino del siglo XIX con el interior africano en blanco, compás de latón y cuaderno de campo frente a rutas iluminadas y un astrolabio de la cartografía africana medieval.',
     compareWithId: 'prensa-ilustrada-1884',
@@ -408,10 +408,10 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
     caption:
       'Muros curvos de granito en piedra seca y torre cónica del Gran Zimbabue. La ficción imperial (Haggard) y la administración colonial negaron su origen africano hasta las excavaciones de Caton-Thompson (1929).',
     provenanceNote:
-      'Registro arquitectónico monocromo de corte monográfico del complejo monumental del Gran Zimbabue (África Austral).',
+      'Reconstrucción visual didáctica en estética fotográfica monocroma del complejo monumental del Gran Zimbabue (África Austral).',
     analyticalFocus:
       'Prueba material decisiva contra el difusionismo racista que atribuía todo gran monumento africano a fenicios, egipcios o reinas legendarias.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado III)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado III)',
     src: resolveAssetUrl('src/assets/images/cs_ciudades_perdidas_zimbabue_1795520994608.jpg'),
     alt: 'Fotografía arquitectónica monocroma de los altos muros curvos de granito en piedra seca y la torre cónica del Gran Zimbabue iluminados por luz rasante sobre la meseta.',
     compareWithId: 'novela-aventuras-1890',
@@ -431,10 +431,10 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
     caption:
       'Lámina litográfica de sabana deshabitada al ocaso, prismáticos de campaña en cuero, brújula y tarjetas postales sepia: la iconografía turística que congeló África en una naturaleza sin ciudad ni historia.',
     provenanceNote:
-      'Efímera turística y postal de época colonial (África Oriental y Austral, décadas de 1910–1930).',
+      'Reconstrucción visual didáctica inspirada en la efímera turística y postal de época colonial (África Oriental y Austral, décadas de 1910–1930).',
     analyticalFocus:
       'Conecta directamente con la sátira de Binyavanga Wainaina: acacias solitarias y cielos rojos usados como emblema único que borra a 1.400 millones de ciudadanos.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado III)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado III)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_safari_postal_colonial_1795521357360.jpg'),
     alt: 'Composición de archivo sobre tela de lino con una litografía antigua de acacias al atardecer en la sabana, prismáticos de latón y cuero, brújula y tarjetas postales coloniales amarillentas.',
     compareWithId: 'arquitectura-afrofuturismo',
@@ -457,7 +457,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Tipología documental de álbum fotográfico de las Exposiciones Universales y Coloniales (París 1900 / 1931, Bruselas, Londres).',
     analyticalFocus:
       'Base histórica para analizar el espectáculo del cuerpo, la «misión civilizadora», la etiqueta de «arte primitivo» y los debates contemporáneos sobre restitución.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado III)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado III)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_exposicion_colonial_1900_1795521358176.jpg'),
     alt: 'Fotografía histórica en tonos sepia hacia 1900 del interior de un gran palacio expositivo europeo con bóveda de hierro y cristal, visitantes de época y hileras de vitrinas museográficas.',
     compareWithId: 'restitucion-bronce-2018',
@@ -482,7 +482,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Tipología de novela colonial ilustrada británica y europea de finales del siglo XIX (tradición de King Solomon’s Mines, 1885).',
     analyticalFocus:
       'Sirve de fuente primaria para aplicar la lectura oposicional de Stuart Hall a sinopsis editoriales, álbumes de aventuras y películas de «templos olvidados».',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado IV)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado IV)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_novela_aventuras_1890_1795521358175.jpg'),
     alt: 'Libro antiguo de aventuras de finales del siglo XIX abierto sobre una mesa de madera junto a una lámpara de aceite, mostrando un grabado en blanco y negro de un explorador europeo ante ruinas cubiertas de selva.',
     compareWithId: 'zimbabue-arquitectura',
@@ -505,7 +505,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Composición documental sobre prensa ilustrada y cartografía geopolítica europea durante el reparto colonial (Scramble for Africa, 1884–1885).',
     analyticalFocus:
       'Permite desmontar la falacia de los «odios ancestrales» en la prensa actual recordando la fabricación colonial moderna de fronteras y censos.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado IV)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado IV)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_prensa_ilustrada_1884_1795521384497.jpg'),
     alt: 'Vista cenital de archivo sobre tapete verde con un mapa grabado de África de 1884 atravesado por líneas rojas, regla y compás de latón, tintero y un periódico ilustrado histórico sobre el Congreso de Berlín.',
     compareWithId: 'manuscritos-tombuctu',
@@ -525,10 +525,10 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
     caption:
       'Latas metálicas de película de 35 mm, tiras de celuloide examinadas con lupa y guantes de archivo sobre mesa luminosa: recuerda que toda película sobre África es una construcción técnica, seleccionada y montada.',
     provenanceNote:
-      'Escena de archivo fílmico y laboratorio de montaje de mediados del siglo XX, época de auge del cine colonial y los noticiarios europeos.',
+      'Reconstrucción visual didáctica de archivo fílmico y laboratorio de montaje de mediados del siglo XX, época de auge del cine colonial y los noticiarios europeos.',
     analyticalFocus:
       'Ilustra la fase de «codificación» (Hall): el encuadre, el montaje y la voz en off deciden quién habla como héroe y quién queda reducido a decorado.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado IV)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado IV)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_proyector_cine_colonial_1795521389345.jpg'),
     alt: 'Mesa de archivo fílmico de mediados del siglo XX con pilas de latas metálicas de película de 35 mm, tiras de celuloide sobre una mesa luminosa, empalmadora mecánica y un archivista con guantes blancos sosteniendo una lupa.',
     compareWithId: 'estudio-bamako-cine',
@@ -553,7 +553,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Diálogo visual entre los fondos manuscritos históricos de África Occidental y el renacimiento editorial africano de la segunda mitad del siglo XX.',
     analyticalFocus:
       'Refuta de raíz la tesis colonial de un continente sin escritura ni pensamiento teórico y enmarca la respuesta literaria de Achebe, Mariama Bâ y Ngũgĩ.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado V)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado V)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_manuscritos_tombuctu_prensa_1795521389920.jpg'),
     alt: 'Mesa iluminada por luz natural con un manuscrito saheliano encuadernado en cuero geométrico abierto por diagramas astronómicos junto a una caja de archivo de madera y volúmenes de poesía y literatura africana.',
     compareWithId: 'biblioteca-colonial',
@@ -576,7 +576,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Homenaje documental a la generación de las independencias: Seydou Keïta, Malick Sidibé, Ousmane Sembène, Safi Faye y el festival FESPACO (1969).',
     analyticalFocus:
       'Invierte por completo el régimen escópico de la Lám. I.2 y las postales de la Lám. II.2: aquí la ciudadanía africana controla la pose, el encuadre, la lengua y la pantalla.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado V)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado V)',
     src: resolveAssetUrl('src/assets/images/cs_contranarrativas_bamako_cine_1795520995818.jpg'),
     alt: 'Estudio luminoso de fotografía y cine de África Occidental de los años sesenta con telón de tela índigo estampada, cámara de formato medio sobre trípode de madera, latas de película de 35 mm y libros de literatura africana.',
     compareWithId: 'postales-africa-1905',
@@ -599,7 +599,7 @@ export const CULTURAL_STUDIES_VISUAL_PLATES: CulturalVisualReferencePlate[] = [
       'Referencia contemporánea de estudios de arquitectura sostenible, diseño y africanfuturismo en grandes capitales africanas del siglo XXI.',
     analyticalFocus:
       'Rompe la «negación de la coetaneidad» (Johannes Fabian) y dialoga con la obra de Nnedi Okorafor, Wanuri Kahiu y la arquitectura de Francis Kéré.',
-    credit: 'Archivo didáctico de fuentes · Bloque III · 05d (Apartado V)',
+    credit: 'Reconstrucción visual didáctica · Bloque IV · 05d (Apartado V)',
     src: resolveAssetUrl('src/assets/images/cs_fuente_arquitectura_afrofuturismo_1795521389160.jpg'),
     alt: 'Estudio contemporáneo de arquitectura africano iluminado por el sol con una maqueta de tierra y madera de formas orgánicas y cubierta solar geométrica sobre planos técnicos, compás de latón y muestras de arcilla.',
     compareWithId: 'safari-postal-colonial',

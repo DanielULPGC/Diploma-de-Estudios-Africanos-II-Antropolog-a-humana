@@ -144,6 +144,17 @@ export function QuizAndBibliography() {
               </a>
             </div>
           </div>
+
+          <div className="bg-canvas border border-hairline px-4 py-3 text-xs leading-relaxed text-ink-muted max-w-5xl">
+            <strong className="font-mono text-ink font-medium">
+              Nota de uso en Moodle y conectividad:
+            </strong>{' '}
+            todos los textos, cronologías, galerías didácticas locales, laboratorios interactivos
+            3D y el glosario contextual funcionan de forma autónoma dentro del paquete estático de
+            Moodle. Los enlaces externos (DOI, Pastwomen, Smithsonian, consulta en directo y
+            reproducción de documentales de AntropologiaVisual.net, así como los retratos fósiles
+            alojados en repositorios abiertos) requieren conexión a internet activa.
+          </div>
         </div>
       </details>
     </section>

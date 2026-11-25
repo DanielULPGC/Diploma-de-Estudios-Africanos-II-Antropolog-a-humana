@@ -7,7 +7,7 @@ const TOTAL_BIBLIOGRAPHY_COUNT = BIBLIOGRAPHY_ENTRIES.reduce(
   0
 );
 
-export type CourseBlockId = 'bloque-1' | 'bloque-2' | 'bloque-3' | 'bloque-4';
+export type CourseBlockId = 'bloque-1' | 'bloque-2' | 'bloque-3' | 'bloque-4' | 'bloque-5';
 
 export type StudyViewMode = 'completo' | 'bloque';
 
@@ -28,8 +28,10 @@ export interface CourseBlockMeta {
   shortTitle: string;
   title: string;
   description: string;
-  accent: 'ochre' | 'lapis' | 'forest' | 'ink';
+  accent: 'ochre' | 'lapis' | 'forest' | 'plum' | 'ink';
   chapterIds: string[];
+  learningOutcomes: string[];
+  reflectionPrompts?: string[];
 }
 
 export interface CourseDeepAction {
@@ -188,7 +190,7 @@ export const COURSE_CHAPTERS: CourseChapterMeta[] = [
     summary:
       'Galería histórica (18 láminas), Cronología Crítica (mitos vs. arqueología africana), iconos, NTLLE y ciencia vs. mito.',
     durationMin: 9,
-    blockId: 'bloque-3',
+    blockId: 'bloque-4',
   },
   {
     id: 'sec-antropologia-visual',
@@ -198,7 +200,7 @@ export const COURSE_CHAPTERS: CourseChapterMeta[] = [
     summary:
       'Archivo conectado con antropologiavisual.net: 13 documentales etnográficos de África, búsqueda en directo, Jean Rouch y método visual.',
     durationMin: 8,
-    blockId: 'bloque-3',
+    blockId: 'bloque-4',
   },
   {
     id: 'sec-cultural-studies',
@@ -206,9 +208,9 @@ export const COURSE_CHAPTERS: CourseChapterMeta[] = [
     label: 'Cultural Studies: el «África misteriosa»',
     shortLabel: 'Cultural Studies',
     summary:
-      'Genealogía colonial (1490–2025), matriz binaria de estereotipos, 12 tropos del «África misteriosa», 17 fuentes históricas, laboratorio de Stuart Hall y contra-narrativas africanas.',
+      'Genealogía colonial (1490–2025), matriz binaria de estereotipos, 12 tropos del «África misteriosa», 17 láminas didácticas de referencia, laboratorio de Stuart Hall y contra-narrativas africanas.',
     durationMin: 11,
-    blockId: 'bloque-3',
+    blockId: 'bloque-4',
   },
   {
     id: 'sec-bibliografia',
@@ -217,7 +219,7 @@ export const COURSE_CHAPTERS: CourseChapterMeta[] = [
     shortLabel: 'Bibliografía',
     summary: `${TOTAL_BIBLIOGRAPHY_COUNT} referencias verificadas APA 7.ª y portales científicos abiertos.`,
     durationMin: 4,
-    blockId: 'bloque-4',
+    blockId: 'bloque-5',
   },
   {
     id: 'sec-glosario',
@@ -226,7 +228,7 @@ export const COURSE_CHAPTERS: CourseChapterMeta[] = [
     shortLabel: 'Glosario',
     summary: 'Definiciones operativas A–Z vinculadas a lo largo de todo el temario.',
     durationMin: null,
-    blockId: 'bloque-4',
+    blockId: 'bloque-5',
   },
 ];
 
@@ -240,6 +242,14 @@ export const COURSE_BLOCKS: CourseBlockMeta[] = [
       'Origen panafricano, los 10 temas de antropología evolutiva, biomecánica 3D y el Atlas fósil.',
     accent: 'ochre',
     chapterIds: ['sec-origenes', 'sec-antropologia', 'sec-atlas-paleo'],
+    learningOutcomes: [
+      'Argumentar por qué el origen de Homo sapiens responde a un modelo panafricano estructurado y no a una única «cuna» puntual.',
+      'Relacionar la evidencia fósil africana, la biomecánica del bipedismo y los cuidados sociales (enfoque Pastwomen) con las grandes dispersiones humanas.',
+    ],
+    reflectionPrompts: [
+      '¿Qué consecuencias científicas tiene situar fósiles como Jebel Irhoud (~300 ka) en Marruecos frente a la antigua idea de un único foco en África Oriental?',
+      '¿Cómo corrige el concepto de actividades de mantenimiento (Pastwomen) el sesgo androcéntrico en las reconstrucciones clásicas de la evolución humana?',
+    ],
   },
   {
     id: 'bloque-2',
@@ -250,34 +260,68 @@ export const COURSE_BLOCKS: CourseBlockMeta[] = [
       'Paleobotánica, límites del ADN antiguo y proteínas, percusión lítica 3D y parentesco.',
     accent: 'lapis',
     chapterIds: ['sec-atlas-paleobotanica', 'sec-paleomolecular', 'etologia'],
+    learningOutcomes: [
+      'Distinguir los límites reales de preservación del ADN antiguo y la paleoproteómica en contextos cálidos africanos.',
+      'Interpretar el papel de la reconstrucción paleoambiental, la tecnología lítica y la primatología comparada para comprender la cultura y la cooperación humanas.',
+    ],
+    reflectionPrompts: [
+      '¿Por qué en latitudes tropicales africanas el ADN antiguo rara vez supera el Holoceno/Pleistoceno final y qué aporta la paleoproteómica de esmalte frente a ese límite?',
+      '¿Qué evidencias de aprendizaje social, automedicación y uso de herramientas en primates africanos obligan a matizar la frontera rígida entre naturaleza y cultura?',
+    ],
   },
   {
     id: 'bloque-3',
     roman: 'III',
     shortTitle: 'Sociedades y Reinos',
-    title: 'Tecnología, reinos y redes africanas',
+    title: 'Tecnología, reinos precoloniales e historiografía',
     description:
-      'Siderurgia y expansión bantú, seis grandes Estados, comercio, historiografía, estereotipos, antropología visual y Cultural Studies.',
+      'Siderurgia y expansión bantú, seis grandes Estados, comercio transahariano e índico y metodología de fuentes.',
     accent: 'forest',
-    chapterIds: [
-      'sec-tecnologia',
-      'sec-reinos',
-      'sec-comercio',
-      'sec-historiografia',
-      'sec-estereotipos-canibalismo',
-      'sec-antropologia-visual',
-      'sec-cultural-studies',
+    chapterIds: ['sec-tecnologia', 'sec-reinos', 'sec-comercio', 'sec-historiografia'],
+    learningOutcomes: [
+      'Evaluar la innovación tecnológica, la diversidad estatal y la integración comercial precolonial de África en las redes del Sáhara y el océano Índico.',
+      'Triangular fuentes orales, manuscritos africanos y registro arqueológico para refutar el mito historiográfico de un «continente sin historia».',
+    ],
+    reflectionPrompts: [
+      '¿Qué demuestra la convivencia de ciudades sin jerarquía estatal clásica (Jenné-Jeno) junto a reinos monumentales (Kush, Aksum, Malí, Gran Zimbabue, Benín) sobre la diversidad política africana?',
+      '¿Por qué resulta metodológicamente insuficiente estudiar África precolonial solo a partir de crónicas externas sin contrastarlas con la arqueología y la tradición oral?',
     ],
   },
   {
     id: 'bloque-4',
     roman: 'IV',
-    shortTitle: 'Referencia y Glosario',
-    title: 'Bibliografía y glosario técnico',
+    shortTitle: 'Imaginarios y Visual',
+    title: 'Estereotipos coloniales, antropología visual y Cultural Studies',
     description:
-      'Bibliografía verificada APA 7.ª, repositorios científicos abiertos y glosario técnico A–Z.',
+      'Deconstrucción del canibalismo colonial, archivo de antropologiavisual.net y crítica cultural del «África misteriosa».',
+    accent: 'plum',
+    chapterIds: [
+      'sec-estereotipos-canibalismo',
+      'sec-antropologia-visual',
+      'sec-cultural-studies',
+    ],
+    learningOutcomes: [
+      'Identificar los mecanismos históricos, visuales y lingüísticos que fabricaron los estereotipos coloniales y el mito del «África misteriosa».',
+      'Aplicar el modelo de decodificación de Stuart Hall y los principios de la antropología visual compartida para analizar fuentes mediáticas y cine etnográfico africano.',
+    ],
+    reflectionPrompts: [
+      '¿Qué función política y económica cumplió la invención europea del «África misteriosa» y del alocronismo durante el reparto colonial y qué restos persisten en el turismo o la prensa actual?',
+      '¿De qué manera el cine etnográfico participativo y las contra-narrativas africanas desplazan la posición del continente de «objeto observado» a «sujeto autor»?',
+    ],
+  },
+  {
+    id: 'bloque-5',
+    roman: 'V',
+    shortTitle: 'Referencia y Glosario',
+    title: 'Bibliografía verificada y glosario técnico',
+    description:
+      'Bibliografía consolidada APA 7.ª de todo el módulo, repositorios abiertos y glosario técnico A–Z con búsqueda contextual.',
     accent: 'ink',
     chapterIds: ['sec-bibliografia', 'sec-glosario'],
+    learningOutcomes: [
+      'Localizar literatura científica verificada (APA 7.ª) y archivos digitales abiertos para ampliar cualquier eje del Módulo I.',
+      'Navegar el vocabulario especializado del curso mediante la vista lateral de búsqueda contextual conectada a cada sección.',
+    ],
   },
 ];
 
@@ -365,7 +409,7 @@ export const INTERACTIVE_LAB_SHORTCUTS: InteractiveLabShortcut[] = [
     id: 'lab-estereotipos-canibalismo',
     title: 'Galería histórica: estereotipos del canibalismo',
     subtitle: '18 láminas comentadas, genealogía colonial, iconos (Chartier), léxico NTLLE y ciencia vs. mito',
-    tag: 'Galería · Bloque III',
+    tag: 'Galería · Bloque IV',
     action: {
       sectionId: 'sec-estereotipos-canibalismo',
       cannibalism: { tab: 'galeria' },
@@ -375,7 +419,7 @@ export const INTERACTIVE_LAB_SHORTCUTS: InteractiveLabShortcut[] = [
     id: 'lab-cronologia-critica',
     title: 'Cronología Crítica: mitos vs. arqueología africana',
     subtitle: 'Doble carril interactivo en 6 regiones africanas (Kush, Aksum, Suajili, Zimbabue, Benín y Congo)',
-    tag: 'Cronología · Bloque III',
+    tag: 'Cronología · Bloque IV',
     action: {
       sectionId: 'sec-estereotipos-canibalismo',
       cannibalism: { tab: 'cronologia-critica' },
@@ -385,7 +429,7 @@ export const INTERACTIVE_LAB_SHORTCUTS: InteractiveLabShortcut[] = [
     id: 'lab-antropologia-visual-africa',
     title: 'Antropología visual de África (AntropologiaVisual.net)',
     subtitle: '13 documentales etnográficos africanos, reproducción en línea y consulta directa al archivo',
-    tag: 'Archivo · Bloque III',
+    tag: 'Archivo · Bloque IV',
     action: {
       sectionId: 'sec-antropologia-visual',
       visualAnthropology: { tab: 'filmografia' },
@@ -394,8 +438,8 @@ export const INTERACTIVE_LAB_SHORTCUTS: InteractiveLabShortcut[] = [
   {
     id: 'lab-cultural-studies-africa',
     title: 'Cultural Studies: el «África misteriosa»',
-    subtitle: '8 tropos coloniales, laboratorio de lectura de Stuart Hall y contra-narrativas africanas',
-    tag: 'Cultural Studies · Bloque III',
+    subtitle: '6 fases coloniales, 12 tropos, 17 láminas de referencia, laboratorio de Stuart Hall y contra-narrativas',
+    tag: 'Cultural Studies · Bloque IV',
     action: {
       sectionId: 'sec-cultural-studies',
       culturalStudies: { tab: 'decodificador' },

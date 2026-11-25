@@ -1,5 +1,7 @@
 import {
   createContext,
+  lazy,
+  Suspense,
   useCallback,
   useContext,
   useRef,
@@ -8,7 +10,12 @@ import {
 } from 'react';
 import { findGlossaryTerm, type GlossaryTerm } from '../data/glossary';
 import type { CourseDeepAction } from '../data/courseNavigation';
-import { GlossaryContextualSidebar } from './GlossaryContextualSidebar';
+
+const LazyGlossaryContextualSidebar = lazy(() =>
+  import('./GlossaryContextualSidebar').then((m) => ({
+    default: m.GlossaryContextualSidebar,
+  }))
+);
 
 export interface GlossaryJumpRequest {
   termId: string;
@@ -103,15 +110,19 @@ export function GlossaryProvider({ children }: { children: ReactNode }) {
     <GlossaryContext.Provider value={{ openTerm, closeTerm, jumpToGlossary, jumpRequest }}>
       {children}
 
-      <GlossaryContextualSidebar
-        term={activeTerm}
-        history={termHistory}
-        onSelectTerm={handleSelectRelatedTerm}
-        onGoBack={handleGoBack}
-        onClose={closeTerm}
-        onJumpToGlossary={jumpToGlossary}
-        onNavigateCourse={handleNavigateCourse}
-      />
+      {activeTerm && (
+        <Suspense fallback={null}>
+          <LazyGlossaryContextualSidebar
+            term={activeTerm}
+            history={termHistory}
+            onSelectTerm={handleSelectRelatedTerm}
+            onGoBack={handleGoBack}
+            onClose={closeTerm}
+            onJumpToGlossary={jumpToGlossary}
+            onNavigateCourse={handleNavigateCourse}
+          />
+        </Suspense>
+      )}
     </GlossaryContext.Provider>
   );
 }
